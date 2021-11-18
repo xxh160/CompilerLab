@@ -28,7 +28,7 @@ antlr: $(LFILE) $(PFILE)
 
 test: compile
 	$(call git_commit, "test")
-	cd classes && $(JAVA) -classpath ./classes:$(ANTLRPATH) Main ../tests/test1.cmm
+	cd classes && $(JAVA) Main ../tests/test1.cmm
 
 clean:
 	rm -f src/*.tokens
