@@ -20,7 +20,7 @@ public class Main {
                 @Override
                 public List<? extends Token> getAllTokens() {
                     fault = 0;
-                    var res = super.getAllTokens();
+                    List<? extends Token> res = super.getAllTokens();
                     if (fault == 0) return res;
                     return null;
                 }
@@ -36,7 +36,7 @@ public class Main {
             e.printStackTrace();
         }
         assert lexer != null;
-        var tokenList = lexer.getAllTokens();
+        List<? extends Token> tokenList = lexer.getAllTokens();
         if (tokenList == null) return;
         for (var i : tokenList) {
             int type = i.getType();
