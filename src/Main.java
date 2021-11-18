@@ -15,8 +15,8 @@ public class Main {
         assert lexer != null;
         var tokenList = lexer.getAllTokens();
 //        if (lexer.getFaults() > 0) return;
-        for (var i : tokenList) {
-            System.out.println(lexer.getToken(i.getTokenIndex()));
+        for (var i : lexer.getRuleNames()) {
+            System.out.println(i);
         }
     }
 
