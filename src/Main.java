@@ -25,8 +25,16 @@ public class Main {
                 float f = Float.parseFloat(i.getText());
                 output += new DecimalFormat("0.000000").format(f);
             } else if (type == 2) {
-                int cur = Integer.parseInt(i.getText());
-                output += String.valueOf(cur);
+                String si = i.getText();
+                int res;
+                if (si.startsWith("0x") || si.startsWith("0X")) {
+                    res = Integer.parseInt(si, 16);
+                } else if (si.startsWith("0")) {
+                    res = Integer.parseInt(si, 8);
+                } else {
+                    res = Integer.parseInt(si);
+                }
+                output += String.valueOf(res);
             } else {
                 output += i.getText();
             }
