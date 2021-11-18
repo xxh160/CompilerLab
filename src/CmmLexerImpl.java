@@ -4,14 +4,22 @@ import org.antlr.v4.runtime.misc.Interval;
 
 public class CmmLexerImpl extends CmmLexer {
 
+    private int faults;
+
     public CmmLexerImpl(CharStream input) {
         super(input);
+        this.faults = 0;
+    }
+
+    public int getFaults() {
+        return this.faults;
     }
 
     @Override
     public void notifyListeners(LexerNoViableAltException e) {
         String text = this._input.getText(Interval.of(this._tokenStartCharIndex, this._input.index()));
-        System.err.printf("Error type A at Line %d: %s.\n", this._tokenStartLine, text);
+        System.err.printf("Error type A at Line %d: '%s'.\n", this._tokenStartLine, text.trim());
+        ++this.faults;
     }
 
 }
