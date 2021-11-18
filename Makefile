@@ -1,7 +1,8 @@
 include Makefile.git
 
 WORK_DIR      = $(shell pwd)
-SUBMIT        = submit.sh 
+SUBMIT        = submit.sh
+ANTLR_GEN     = src
 DOMAINNAME    = 139.224.195.50:3000
 
 # ANTLR       = java -jar /usr/local/lib/antlr-*-complete.jar -listener -visitor -long-messages
@@ -31,10 +32,11 @@ test: compile
 	cd classes && $(JAVA) Main ../tests/test1.cmm
 
 clean:
-	rm -f src/*.tokens
-	rm -f src/*.interp
-	rm -f src/CmmLexer.java src/CmmParser.java src/CmmParserBaseListener.java src/CmmParserBaseVisitor.java src/CmmParserListener.java src/CmmParserVisitor.java
+	rm -f $(ANTLR_GEN)/*.tokens
+	rm -f $(ANTLR_GEN)/*.interp
+	rm -f $(ANTLR_GEN)/CmmLexer.java $(ANTLR_GEN)/CmmParser.java $(ANTLR_GEN)/CmmParserBaseListener.java $(ANTLR_GEN)/CmmParserBaseVisitor.java $(ANTLR_GEN)/CmmParserListener.java $(ANTLR_GEN)/CmmParserVisitor.java
 	rm -rf classes
+	rm -rf out
 
 submit: clean
 	git gc

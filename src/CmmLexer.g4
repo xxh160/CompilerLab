@@ -1,5 +1,4 @@
 lexer grammar CmmLexer;
-import Common;
 
 // unsigned int
 INT:      DECIMAL | OCTAL | HEX;
@@ -29,6 +28,9 @@ RETURN:   'return';
 IF:       'if';
 ELSE:     'else';
 WHILE:    'while';
+LCOM:     '//' .*? '\n' -> skip;
+BCOM:     '/*' .*? '*/' -> skip;
+WS:       [ \t\r\n]+    -> skip ;
 ID:       WORD+ ( WORD | DIGIT )*;
 
 fragment E:          [eE];
