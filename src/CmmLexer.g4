@@ -7,7 +7,7 @@ INT:      DECIMAL | OCTAL | HEX;
 SEMI:     ';';
 COMMA:    ',';
 ASSIGNOP: '=';
-RELOP:    '>' | '<' | '>=' | '<=' | '==' | '!=';
+RELOP:    '>=' | '<=' | '==' | '!=' | '>' | '<';
 PLUS:     '+';
 MINUS:    '-';
 STAR:     '*';
