@@ -16,8 +16,7 @@ public class Main {
         var tokenList = lexer.getAllTokens();
 //        if (lexer.getFaults() > 0) return;
         for (var i : tokenList) {
-            System.out.print(i.getType());
-            System.out.println(" " + i);
+            System.out.print(lexer.getToken(i.getType()));
         }
     }
 
