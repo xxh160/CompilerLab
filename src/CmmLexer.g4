@@ -1,9 +1,9 @@
 lexer grammar CmmLexer;
 
+// unsigned float
+FLOAT:    (BASE E EXPONENT) | FDIGIT;
 // unsigned int
 INT:      DECIMAL | OCTAL | HEX;
-// unsigned float
-FLOAT:    BASE E EXPONENT | FDIGIT;
 SEMI:     ';';
 COMMA:    ',';
 ASSIGNOP: '=';
@@ -34,8 +34,8 @@ WS:       [ \t\r\n]+    -> skip ;
 ID:       WORD+ ( WORD | DIGIT )*;
 
 fragment E:          [eE];
-fragment BASE:       DIGIT? DOT DIGIT | DIGIT+ DOT;
-fragment EXPONENT:   (PLUS | MINUS)? DIGIT+;
+fragment BASE:       DIGIT* DOT DIGIT | DIGIT+ DOT;
+fragment EXPONENT:   [+-]? DIGIT+;
 fragment FDIGIT:     DECIMAL DOT DIGIT+;
 
 fragment DECIMAL:    ZERO | POSDIGIT+ DIGIT*;
