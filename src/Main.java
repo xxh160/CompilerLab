@@ -24,7 +24,7 @@ public class Main {
             output += " ";
             // float
             if (type == 1) {
-                float f = Float.parseFloat(i.getText());
+                double f = Float.parseFloat(i.getText());
                 output += new DecimalFormat("0.000000").format(f);
             } else if (type == 2) {
                 String si = i.getText();
