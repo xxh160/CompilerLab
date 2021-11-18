@@ -4,5 +4,5 @@ int main()
     /*
        block comment
      */
-     int i = 01;
+     int i = 09;
   }
