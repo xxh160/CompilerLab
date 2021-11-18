@@ -19,7 +19,7 @@ public class CmmLexerImpl extends CmmLexer {
     }
 
     public String getToken(int i) {
-        if (i - 1 >= ruleNames.length || i - 1 s< 0)return null;
+        if (i - 1 >= ruleNames.length || i - 1 < 0) return null;
         return ruleNames[i - 1];
     }
 
