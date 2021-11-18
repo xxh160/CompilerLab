@@ -36,7 +36,7 @@ ID:       WORD+ ( WORD | DIGIT )*;
 fragment E:          [eE];
 fragment BASE:       DIGIT* DOT DIGIT+ | DIGIT+ DOT;
 fragment EXPONENT:   [+-]? DIGIT+;
-fragment FDIGIT:     DECIMAL DOT DIGIT+;
+fragment FDIGIT:     DIGIT+ DOT DIGIT+;
 
 fragment DECIMAL:    ZERO | POSDIGIT+ DIGIT*;
 fragment OCTAL:      ZERO OCTALDIGIT*;
