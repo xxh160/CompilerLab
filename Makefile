@@ -6,7 +6,7 @@ DOMAINNAME    = 139.224.195.50:3000
 
 # ANTLR       = java -jar /usr/local/lib/antlr-*-complete.jar -listener -visitor -long-messages
 ANTLR         = java -jar /usr/share/java/antlr-*-complete.jar -listener -visitor -long-messages
-JAVAC         = javac -g
+JAVAC         = javac -g -cp /usr/share/java/antlr-*-complete.jar
 JAVA          = java
 
 PFILE         = $(shell find . -name "CmmParser.g4")
