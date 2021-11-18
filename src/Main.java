@@ -41,7 +41,7 @@ public class Main {
             output += " at Line ";
             output += String.valueOf(i.getLine());
             output += ".";
-            System.out.println(output);
+            System.err.println(output);
         }
     }
 
