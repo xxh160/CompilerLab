@@ -2,6 +2,7 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.Token;
 
 import java.io.FileInputStream;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -28,13 +29,13 @@ public class Main {
                 output += new DecimalFormat("0.000000").format(f);
             } else if (type == 2) {
                 String si = i.getText();
-                int res;
+                long res;
                 if (si.startsWith("0x") || si.startsWith("0X")) {
                     res = Integer.parseInt(si.substring(2), 16);
                 } else if (si.startsWith("0") && si.length() > 1) {
                     res = Integer.parseInt(si.substring(1), 8);
                 } else {
-                    res = Integer.parseInt(si);
+                    res = new BigInteger(si).longValue();
                 }
                 output += String.valueOf(res);
             } else {
