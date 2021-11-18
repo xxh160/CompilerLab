@@ -24,11 +24,6 @@ public class Main {
             output += " ";
             // float
             if (type == 1) {
-//                String si = i.getText().toLowerCase();
-//                if (si.contains("e")) {
-//                    String base = si.substring(0, si.indexOf('e'));
-//                    String exponent = si.substring(si.indexOf('e') + 1);
-//                }
                 double f = Double.parseDouble(i.getText());
                 output += new DecimalFormat("0.000000").format(f);
             } else if (type == 2) {
