@@ -1,7 +1,7 @@
 lexer grammar CmmLexer;
 
 // unsigned float
-FLOAT:    (( BASE | DIGIT+ ) E EXPONENT) | FDIGIT;
+FLOAT:    (BASE E EXPONENT) | FDIGIT;
 // unsigned int
 INT:      DECIMAL | OCTAL | HEX;
 SEMI:     ';';
