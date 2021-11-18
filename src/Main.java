@@ -31,7 +31,7 @@ public class Main {
                 int res;
                 if (si.startsWith("0x") || si.startsWith("0X")) {
                     res = Integer.parseInt(si.substring(2), 16);
-                } else if (si.startsWith("0")) {
+                } else if (si.startsWith("0") && si.length() > 1) {
                     res = Integer.parseInt(si.substring(1), 8);
                 } else {
                     res = Integer.parseInt(si);
