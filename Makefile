@@ -1,14 +1,19 @@
 include Makefile.git
 
-DOMAINNAME = 139.224.195.50:3000
-ANTLR = java -jar /usr/local/lib/antlr-*-complete.jar -listener -visitor -long-messages
-JAVAC = javac -g
-JAVA = java
+WORK_DIR      = $(shell pwd)
+SUBMIT        = submit.sh 
+DOMAINNAME    = 139.224.195.50:3000
 
-PFILE = $(shell find . -name "CmmParser.g4")
-LFILE = $(shell find . -name "CmmLexer.g4")
-JAVAFILE = $(shell find . -name "*.java")
-ANTLRPATH = $(shell find /usr/local/lib -name "antlr-*-complete.jar")
+# ANTLR       = java -jar /usr/local/lib/antlr-*-complete.jar -listener -visitor -long-messages
+ANTLR         = java -jar /usr/share/java/antlr-*-complete.jar -listener -visitor -long-messages
+JAVAC         = javac -g
+JAVA          = java
+
+PFILE         = $(shell find . -name "CmmParser.g4")
+LFILE         = $(shell find . -name "CmmLexer.g4")
+JAVAFILE      = $(shell find . -name "*.java")
+# ANTLRPATH   = $(shell find /usr/local/lib -name "antlr-*-complete.jar")
+ANTLRPATH     = $(shell find /usr/share/java -name "antlr-*-complete.jar")
 
 compile: antlr
 	$(call git_commit,"make")
@@ -33,7 +38,7 @@ clean:
 
 submit: clean
 	git gc
-	bash -c "$$(curl -s $(DOMAINNAME)/scripts/submit.sh)"
+	bash $(WORK_DIR)/$(SUBMIT)
 
 .PHONY: compile antlr test run clean submit
 
