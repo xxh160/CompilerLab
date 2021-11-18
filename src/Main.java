@@ -28,9 +28,9 @@ public class Main {
                 String si = i.getText();
                 int res;
                 if (si.startsWith("0x") || si.startsWith("0X")) {
-                    res = Integer.parseInt(si, 16);
+                    res = Integer.parseInt(si.substring(2), 16);
                 } else if (si.startsWith("0")) {
-                    res = Integer.parseInt(si, 8);
+                    res = Integer.parseInt(si.substring(1), 8);
                 } else {
                     res = Integer.parseInt(si);
                 }
