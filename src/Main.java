@@ -31,9 +31,9 @@ public class Main {
                 String si = i.getText();
                 long res;
                 if (si.startsWith("0x") || si.startsWith("0X")) {
-                    res = Integer.parseInt(si.substring(2), 16);
+                    res = new BigInteger(si.substring(2), 16).longValue();
                 } else if (si.startsWith("0") && si.length() > 1) {
-                    res = Integer.parseInt(si.substring(1), 8);
+                    res = new BigInteger(si.substring(1), 8).longValue();
                 } else {
                     res = new BigInteger(si).longValue();
                 }
