@@ -34,7 +34,7 @@ WS:       [ \t\r\n]+    -> skip ;
 ID:       WORD+ ( WORD | DIGIT )*;
 
 fragment E:          [eE];
-fragment BASE:       DIGIT* DOT DIGIT | DIGIT+ DOT;
+fragment BASE:       DIGIT* DOT DIGIT+ | DIGIT+ DOT;
 fragment EXPONENT:   [+-]? DIGIT+;
 fragment FDIGIT:     DECIMAL DOT DIGIT+;
 
