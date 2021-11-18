@@ -5,4 +5,4 @@ int main()
        block comment
      */
      int i = 1;
-8  }
+  }
