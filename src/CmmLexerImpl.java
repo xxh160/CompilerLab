@@ -19,8 +19,8 @@ public class CmmLexerImpl extends CmmLexer {
     }
 
     public String getToken(int i) {
-        if (i >= tokenNames.length || i < 0) return null;
-        return tokenNames[i];
+        if (i >= ruleNames.length || i < 0) return null;
+        return ruleNames[i];
     }
 
     @Override
