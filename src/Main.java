@@ -1,7 +1,5 @@
 import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.LexerNoViableAltException;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.Interval;
 
 import java.io.FileInputStream;
 import java.text.DecimalFormat;
@@ -10,37 +8,19 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        CmmLexer lexer = null;
+        CmmLexerImpl lexer = null;
         try {
             ANTLRInputStream input = new ANTLRInputStream(new FileInputStream(args[0]));
-            lexer = new CmmLexer(input) {
-
-                private int fault;
-
-                @Override
-                public List<? extends Token> getAllTokens() {
-                    fault = 0;
-                    List<? extends Token> res = super.getAllTokens();
-                    if (fault == 0) return res;
-                    return null;
-                }
-
-                @Override
-                public void notifyListeners(LexerNoViableAltException e) {
-                    String text = this._input.getText(Interval.of(this._tokenStartCharIndex, this._input.index()));
-                    System.err.printf("Error type A at Line %d: '%s'.\n", this._tokenStartLine, text.trim());
-                    ++this.fault;
-                }
-            };
+            lexer = new CmmLexerImpl(input);
         } catch (Exception e) {
             e.printStackTrace();
         }
         assert lexer != null;
         List<? extends Token> tokenList = lexer.getAllTokens();
-        if (tokenList == null) return;
+        if (lexer.getFaults() > 0) return;
         for (Token i : tokenList) {
             int type = i.getType();
-            String output = lexer.getRuleNames()[type - 1];
+            String output = lexer.getToken(type);
             output += " ";
             // float
             if (type == 1) {
