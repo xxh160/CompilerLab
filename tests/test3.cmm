@@ -4,5 +4,6 @@ int main()
     /*
        block comment
      */
+     000000000.1e2
      int i = 09;
   }
