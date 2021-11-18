@@ -18,6 +18,11 @@ public class CmmLexerImpl extends CmmLexer {
         return this.faults;
     }
 
+    public String getToken(int i) {
+        if (i >= tokenNames.length) return null;
+        return tokenNames[i];
+    }
+
     @Override
     public List<? extends Token> getAllTokens() {
         this.faults = 0;
