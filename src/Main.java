@@ -38,7 +38,7 @@ public class Main {
         assert lexer != null;
         List<? extends Token> tokenList = lexer.getAllTokens();
         if (tokenList == null) return;
-        for (List<? extends Token> i : tokenList) {
+        for (Token i : tokenList) {
             int type = i.getType();
             String output = lexer.getRuleNames()[type - 1];
             output += " ";
