@@ -14,13 +14,14 @@ public class Main {
         }
         assert lexer != null;
         var tokenList = lexer.getAllTokens();
-//        if (lexer.getFaults() > 0) return;
+        if (lexer.getFaults() > 0) return;
         for (var i : tokenList) {
             String output = lexer.getToken(i.getType());
             output += " ";
             output += i.getText();
-            output += " at line ";
+            output += " at Line ";
             output += String.valueOf(i.getLine());
+            output += ".";
             System.out.println(output);
         }
     }
