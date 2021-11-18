@@ -1,6 +1,7 @@
 import org.antlr.v4.runtime.ANTLRInputStream;
 
 import java.io.FileInputStream;
+import java.text.DecimalFormat;
 
 public class Main {
 
@@ -16,9 +17,19 @@ public class Main {
         var tokenList = lexer.getAllTokens();
         if (lexer.getFaults() > 0) return;
         for (var i : tokenList) {
-            String output = lexer.getToken(i.getType());
+            int type = i.getType();
+            String output = lexer.getToken(type);
             output += " ";
-            output += i.getText();
+            // float
+            if (type == 1) {
+                float f = Float.parseFloat(i.getText());
+                output += new DecimalFormat("0.000000").format(f);
+            } else if (type == 2) {
+                int cur = Integer.parseInt(i.getText());
+                output += String.valueOf(cur);
+            } else {
+                output += i.getText();
+            }
             output += " at Line ";
             output += String.valueOf(i.getLine());
             output += ".";
