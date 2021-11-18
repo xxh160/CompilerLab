@@ -16,7 +16,7 @@ JAVAFILE      = $(shell find . -name "*.java")
 ANTLRPATH     = $(shell find /usr/share/java -name "antlr-*-complete.jar")
 
 compile: antlr
-	$(call git_commit,"make")
+	$(call git_commit, "make")
 	mkdir -p classes
 	$(JAVAC) $(JAVAFILE) -d classes
 
@@ -28,7 +28,7 @@ antlr: $(LFILE) $(PFILE)
 
 test: compile
 	$(call git_commit, "test")
-	cd classes && $(JAVA) Main ../tests/test1.cmm
+	cd classes && $(JAVA) -classpath ./classes:$(ANTLRPATH) Main ../tests/test1.cmm
 
 clean:
 	rm -f src/*.tokens
@@ -41,4 +41,3 @@ submit: clean
 	bash $(WORK_DIR)/$(SUBMIT)
 
 .PHONY: compile antlr test run clean submit
-
