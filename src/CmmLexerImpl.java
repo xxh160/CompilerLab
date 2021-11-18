@@ -1,6 +1,9 @@
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.LexerNoViableAltException;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
+
+import java.util.List;
 
 public class CmmLexerImpl extends CmmLexer {
 
@@ -13,6 +16,12 @@ public class CmmLexerImpl extends CmmLexer {
 
     public int getFaults() {
         return this.faults;
+    }
+
+    @Override
+    public List<? extends Token> getAllTokens() {
+        this.faults = 0;
+        return super.getAllTokens();
     }
 
     @Override
