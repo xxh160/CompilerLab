@@ -40,8 +40,8 @@ fragment EXPONENT:   [+-]? DIGIT+;
 fragment FDIGIT:     DIGIT+ DOT DIGIT+;
 
 fragment DECIMAL:    ZERO | POSDIGIT+ DIGIT*;
-fragment OCTAL:      ZERO OCTALDIGIT*;
-fragment HEX:        HEXPREFIX HEXDIGIT*;
+fragment OCTAL:      ZERO OCTALDIGIT+;
+fragment HEX:        HEXPREFIX HEXDIGIT+;
 
 fragment ZERO:       '0';
 fragment POSDIGIT:   [1-9];
