@@ -30,7 +30,7 @@ ELSE:     'else';
 WHILE:    'while';
 LCOM:     '//' ~[\r\n]* -> skip;
 BCOM:     '/*' .*? '*/' -> skip;
-WS:       '\t'+ -> skip ;
+WS:       [ \t]+ -> skip ;
 NEWLINE:  ( '\r' '\n'? | '\n' ) -> skip;
 ID:       WORD+ ( WORD | DIGIT )*;
 
