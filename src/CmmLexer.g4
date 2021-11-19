@@ -28,9 +28,10 @@ RETURN:   'return';
 IF:       'if';
 ELSE:     'else';
 WHILE:    'while';
-LCOM:     '//' .*? '\n' -> skip;
+LCOM:     '//' ~[\r\n]* -> skip;
 BCOM:     '/*' .*? '*/' -> skip;
-WS:       [ \t\r\n]+    -> skip ;
+WS:       '\t'+ -> skip ;
+NEWLINE:  ( '\r' '\n'? | '\n' ) -> skip;
 ID:       WORD+ ( WORD | DIGIT )*;
 
 fragment E:          [eE];
