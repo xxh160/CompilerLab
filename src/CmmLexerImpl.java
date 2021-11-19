@@ -32,7 +32,7 @@ public class CmmLexerImpl extends CmmLexer {
     @Override
     public void notifyListeners(LexerNoViableAltException e) {
         String text = this._input.getText(Interval.of(this._tokenStartCharIndex, this._input.index()));
-        System.err.printf("Error type A at Line %d: '%s'.\n", this._tokenStartLine, text.trim());
+        System.err.printf("Error type A at Line %d: '%s'.\n", this._tokenStartLine, text);
         ++this.faults;
     }
 

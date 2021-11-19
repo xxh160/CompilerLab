@@ -28,6 +28,7 @@ public class Main {
                 double f = Double.parseDouble(i.getText());
                 output += new DecimalFormat("0.000000").format(f);
             } else if (type == 2) {
+                // int
                 String si = i.getText();
                 long res;
                 if (si.startsWith("0x") || si.startsWith("0X")) {
