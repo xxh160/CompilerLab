@@ -16,22 +16,18 @@ Program (1)
             ID: a
           RP
           Stmt (2)
+            IF
+            LP
             Exp (2)
-              ID: b
-            SEMI
-        Stmt (2)
-          IF
-          LP
-          Exp (2)
-            ID: c
-          RP
-          Stmt (2)
-            Exp (2)
-              ID: d
-            SEMI
-          ELSE
-          Stmt (2)
-            Exp (2)
-              ID: e
-            SEMI
+              ID: c
+            RP
+            Stmt (2)
+              Exp (2)
+                ID: d
+              SEMI
+            ELSE
+            Stmt (2)
+              Exp (2)
+                ID: e
+              SEMI
       RC
