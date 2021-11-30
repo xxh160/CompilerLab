@@ -31,6 +31,7 @@ test: compile
 	$(call git_commit, "test")
 	cd classes && $(JAVA) -classpath .:$(ANTLRPATH) Main ../tests/test3.cmm 2> ../tests/actual.txt
 	diff tests/expected.txt tests/actual.txt > tests/out.txt
+	echo $$?
 
 clean:
 	rm -f $(ANTLR_GEN)/*.tokens
