@@ -19,7 +19,7 @@ specifier: TYPE
 structSpecifier: STRUCT ID? LC def* RC
                | STRUCT ID;
 
-// declaratorshttp://139.224.195.50:3000/
+// declarators
 varDec: ID (LB INT RB)*;
 
 funDec: ID LP varList? RP;
