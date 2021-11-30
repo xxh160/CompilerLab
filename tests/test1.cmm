@@ -5,6 +5,6 @@ int main() {
     } d;
     int i
     =
-    i[2] = ;
+    i[2] = d.c;
     return 0;
 }
