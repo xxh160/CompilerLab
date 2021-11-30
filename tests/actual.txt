@@ -1,1 +1,33 @@
-Error type B at Line 1: mismatched input '-' expecting {<EOF>, TYPE, 'struct'}.
+Program (1)
+  ExtDef (1)
+    Specifier (1)
+      TYPE: int
+    FunDec (1)
+      ID: main
+      LP
+      RP
+    CompSt (1)
+      LC
+      StmtList (2)
+        Stmt (2)
+          Exp (2)
+            Exp (2)
+              MINUS
+              Exp (2)
+                ID: f
+                LP
+                Args (2)
+                  Exp (2)
+                    INT: 0
+                RP
+            PLUS
+            Exp (2)
+              Exp (2)
+                INT: 2
+              STAR
+              Exp (2)
+                MINUS
+                Exp (2)
+                  INT: 3
+          SEMI
+      RC
