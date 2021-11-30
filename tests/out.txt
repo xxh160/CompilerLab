@@ -1,7 +1,6 @@
-1,2c1,2
+1,2c1
 < Error type B at Line 2: extraneous input ';' expecting {<EOF>, 'struct', TYPE}.
 < Error type B at Line 7: mismatched input '}' expecting ID.
 \ No newline at end of file
 ---
-> Error type B at Line 2: extraneous input ';' expecting {<EOF>, TYPE, 'struct'}.
-> Error type B at Line 7: mismatched input '}' expecting ID.
+> Error type B at Line 1: mismatched input '-' expecting {<EOF>, TYPE, 'struct'}.

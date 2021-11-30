@@ -1,2 +1,1 @@
-Error type B at Line 2: extraneous input ';' expecting {<EOF>, TYPE, 'struct'}.
-Error type B at Line 7: mismatched input '}' expecting ID.
+Error type B at Line 1: mismatched input '-' expecting {<EOF>, TYPE, 'struct'}.
