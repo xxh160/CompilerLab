@@ -54,20 +54,20 @@ decList: dec (COMMA dec)*;
 dec: varDec (ASSIGNOP exp)*;
 
 // expressions and args
-exp: exp ASSIGNOP exp
-   | exp AND      exp
-   | exp OR       exp
-   | exp RELOP    exp
-   | exp PLUS     exp
-   | exp MINUS    exp
-   | exp STAR     exp
-   | exp DIV      exp
-   | LP exp RP
+exp: exp DOT ID
+   | exp LB exp RB
    | MINUS exp
    | NOT exp
+   | exp STAR     exp
+   | exp DIV      exp
+   | exp PLUS     exp
+   | exp MINUS    exp
+   | exp RELOP    exp
+   | exp AND      exp
+   | exp OR       exp
+   | <assco=right> exp ASSIGNOP exp
+   | LP exp RP
    | ID LP args* RP
-   | exp LB exp RB
-   | exp DOT ID
    | ID
    | INT
    | FLOAT
