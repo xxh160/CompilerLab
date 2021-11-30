@@ -22,7 +22,7 @@ compile: antlr
 	$(JAVAC) $(JAVAFILE) -d classes
 
 run: compile
-	java -classpath ./classes:$(ANTLRPATH) Main $(FILEPATH)
+	java -classpath ./classes:$(ANTLRPATH) Main $(FILEPATH) 2> tests/result.txt
 
 antlr: $(LFILE) $(PFILE) 
 	$(ANTLR) $(PFILE) $(LFILE)
