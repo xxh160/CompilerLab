@@ -56,8 +56,8 @@ dec: varDec (ASSIGNOP exp)*;
 // expressions and args
 exp: exp DOT ID
    | exp LB exp RB
-   | MINUS exp
-   | NOT exp
+   | <assoc=right> MINUS exp
+   | <assoc=right> NOT exp
    | exp STAR     exp
    | exp DIV      exp
    | exp PLUS     exp
