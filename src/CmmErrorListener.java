@@ -28,17 +28,30 @@ public class CmmErrorListener implements ANTLRErrorListener {
         this.parser = parser;
     }
 
+    private boolean isEnd(TokenStream stream, int cur) {
+        if (cur == 0) return true;
+        if (stream.get(cur).getType() == CmmParser.LB && stream.get(cur - 1).getType() == CmmParser.ID) return true;
+        return false;
+    }
+
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
         this.error = true;
+        // maybe many errors
         if (msg.startsWith("array size must be an integer constant")){
             Token token = (CommonToken) offendingSymbol;
             int s = token.getTokenIndex() - 1;
             TokenStream stream = this.parser.getTokenStream();
-            while (token.getType() != CmmParser.ID && token.getType() != CmmParser.FLOAT) {
+            while (isEnd(stream, s)) {
                 token = stream.get(s--);
+                if (token.getType() == CmmParser.ID || token.getType() == CmmParser.FLOAT) {
+                    int l = token.getLine();
+                    if (this.errorLines.contains(l)) continue;
+                    this.errorLines.add(l);
+                    System.err.println("Error type B at Line " + line + ": " + msg + ".");
+                }
             }
-            line = token.getLine();
+            return;
         }
         if (this.errorLines.contains(line)) return;
         this.errorLines.add(line);
