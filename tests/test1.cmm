@@ -3,7 +3,8 @@ int main() {
         int c;
         int b;
     } d;
-    int i;
+    int i
+    =
     i[2] = 5;
     return 0;
 }
