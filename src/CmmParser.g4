@@ -16,8 +16,12 @@ extDecList: varDec (COMMA varDec)*;
 specifier: TYPE
          | structSpecifier;
 
-structSpecifier: STRUCT ID? LC def* RC
-               | STRUCT ID;
+structSpecifier: STRUCT optTag LC defList RC
+               | STRUCT tag;
+
+optTag: ID?;
+
+tag: ID;
 
 // declarators
 varDec: ID (LB INT RB)*
@@ -31,7 +35,9 @@ varList: paramDec (COMMA paramDec)*;
 paramDec: specifier varDec;
 
 // statements
-compSt: LC def* stmt* RC;
+compSt: LC defList stmtList RC;
+
+stmtList: stmt*;
 
 stmt: compSt
     | RETURN? exp SEMI
@@ -39,6 +45,8 @@ stmt: compSt
     | WHILE LP exp RP stmt;
 
 // local definitions
+defList: def*;
+
 def: specifier decList SEMI;
 
 decList: dec (COMMA dec)*;

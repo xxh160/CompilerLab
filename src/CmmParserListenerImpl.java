@@ -90,6 +90,24 @@ public class CmmParserListenerImpl implements CmmParserListener {
     }
 
     @Override
+    public void enterOptTag(CmmParser.OptTagContext ctx) {
+        System.err.println("OptTag (" + ctx.start.getLine() + ")");
+    }
+
+    @Override
+    public void exitOptTag(CmmParser.OptTagContext ctx) {
+    }
+
+    @Override
+    public void enterTag(CmmParser.TagContext ctx) {
+        System.err.println("Tag (" + ctx.start.getLine() + ")");
+    }
+
+    @Override
+    public void exitTag(CmmParser.TagContext ctx) {
+    }
+
+    @Override
     public void enterVarDec(CmmParser.VarDecContext ctx) {
         System.err.println("VarDec (" + ctx.start.getLine() + ")");
     }
@@ -135,12 +153,31 @@ public class CmmParserListenerImpl implements CmmParserListener {
     }
 
     @Override
+    public void enterStmtList(CmmParser.StmtListContext ctx) {
+        System.err.println("StmtList (" + ctx.start.getLine() + ")");
+    }
+
+    @Override
+    public void exitStmtList(CmmParser.StmtListContext ctx) {
+
+    }
+
+    @Override
     public void enterStmt(CmmParser.StmtContext ctx) {
         System.err.println("Stmt (" + ctx.start.getLine() + ")");
     }
 
     @Override
     public void exitStmt(CmmParser.StmtContext ctx) {
+    }
+
+    @Override
+    public void enterDefList(CmmParser.DefListContext ctx) {
+        System.err.println("DefList (" + ctx.start.getLine() + ")");
+    }
+
+    @Override
+    public void exitDefList(CmmParser.DefListContext ctx) {
     }
 
     @Override
