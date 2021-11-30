@@ -20,7 +20,9 @@ Program (1)
               ASSIGNOP
               Exp (2)
                 Exp (2)
-                  INT: 3
+                  MINUS
+                  Exp (2)
+                    INT: 3
                 MINUS
                 Exp (2)
                   MINUS
