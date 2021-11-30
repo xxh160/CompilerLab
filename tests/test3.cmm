@@ -2,5 +2,5 @@ int main(){
 if (a) if (c) d; else {
     int a = 1;
     a = 2;
-};
+}
 }

@@ -1,1 +1,1 @@
-Error type B at Line 5: no viable alternative at input 'else{inta=1;a=2;int'.
+Error type B at Line 5: extraneous input ';' expecting '}'.
