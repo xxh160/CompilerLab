@@ -21,7 +21,7 @@ structSpecifier: STRUCT ID? LC def* RC
 
 // declarators
 varDec: ID (LB INT RB)*
-      | ID (LB INT RB)* (LB (FLOAT|ID) RB) (LB (INT|FLOAT|ID) RB)* { notifyErrorListeners("error index type"); }
+      | ID (LB INT RB)* (LB (FLOAT|ID) RB) (LB (INT|FLOAT|ID) RB)* { notifyErrorListeners("array size must be an integer constant"); }
       ;
 
 funDec: ID LP varList? RP;
