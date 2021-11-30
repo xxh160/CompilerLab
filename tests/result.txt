@@ -21,8 +21,10 @@ Program (1)
               Exp (2)
                 Exp (2)
                   INT: 3
-                AND
+                MINUS
                 Exp (2)
-                  INT: 7
+                  MINUS
+                  Exp (2)
+                    INT: 7
           SEMI
       RC
