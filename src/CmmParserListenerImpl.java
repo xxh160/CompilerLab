@@ -46,6 +46,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterProgram(CmmParser.ProgramContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("Program (" + ctx.start.getLine() + ")");
     }
 
@@ -55,6 +56,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterExtDef(CmmParser.ExtDefContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("ExtDef (" + ctx.start.getLine() + ")");
     }
 
@@ -64,6 +66,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterExtDecList(CmmParser.ExtDecListContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("ExtDecList (" + ctx.start.getLine() + ")");
     }
 
@@ -73,6 +76,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterSpecifier(CmmParser.SpecifierContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("Specifier (" + ctx.start.getLine() + ")");
     }
 
@@ -82,6 +86,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterStructSpecifier(CmmParser.StructSpecifierContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("StructSpecifier (" + ctx.start.getLine() + ")");
     }
 
@@ -91,6 +96,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterOptTag(CmmParser.OptTagContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("OptTag (" + ctx.start.getLine() + ")");
     }
 
@@ -100,6 +106,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterTag(CmmParser.TagContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("Tag (" + ctx.start.getLine() + ")");
     }
 
@@ -109,6 +116,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterVarDec(CmmParser.VarDecContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("VarDec (" + ctx.start.getLine() + ")");
     }
 
@@ -118,6 +126,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterFunDec(CmmParser.FunDecContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("FunDec (" + ctx.start.getLine() + ")");
     }
 
@@ -127,6 +136,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterVarList(CmmParser.VarListContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("VarList (" + ctx.start.getLine() + ")");
     }
 
@@ -136,6 +146,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterParamDec(CmmParser.ParamDecContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("ParamDec (" + ctx.start.getLine() + ")");
     }
 
@@ -145,6 +156,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterCompSt(CmmParser.CompStContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("CompSt (" + ctx.start.getLine() + ")");
     }
 
@@ -154,6 +166,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterStmtList(CmmParser.StmtListContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("StmtList (" + ctx.start.getLine() + ")");
     }
 
@@ -163,6 +176,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterStmt(CmmParser.StmtContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("Stmt (" + ctx.start.getLine() + ")");
     }
 
@@ -182,6 +196,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterDef(CmmParser.DefContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("Def (" + ctx.start.getLine() + ")");
     }
 
@@ -191,6 +206,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterDecList(CmmParser.DecListContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("DecList (" + ctx.start.getLine() + ")");
     }
 
@@ -200,6 +216,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterDec(CmmParser.DecContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("Dec (" + ctx.start.getLine() + ")");
     }
 
@@ -209,6 +226,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterExp(CmmParser.ExpContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("Exp (" + ctx.start.getLine() + ")");
     }
 
@@ -218,6 +236,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterArgs(CmmParser.ArgsContext ctx) {
+        if (ctx.children == null) return;
         System.err.println("Args (" + ctx.start.getLine() + ")");
     }
 
