@@ -1,1 +1,54 @@
-Error type B at Line 5: extraneous input ';' expecting '}'.
+Program (1)
+  ExtDef (1)
+    Specifier (1)
+      TYPE: int
+    FunDec (1)
+      ID: main
+      LP
+      RP
+    CompSt (1)
+      LC
+      StmtList (2)
+        Stmt (2)
+          IF
+          LP
+          Exp (2)
+            ID: a
+          RP
+          Stmt (2)
+            IF
+            LP
+            Exp (2)
+              ID: c
+            RP
+            Stmt (2)
+              Exp (2)
+                ID: d
+              SEMI
+            ELSE
+            Stmt (2)
+              CompSt (2)
+                LC
+                DefList (3)
+                  Def (3)
+                    Specifier (3)
+                      TYPE: int
+                    DecList (3)
+                      Dec (3)
+                        VarDec (3)
+                          ID: a
+                        ASSIGNOP
+                        Exp (3)
+                          INT: 1
+                    SEMI
+                StmtList (4)
+                  Stmt (4)
+                    Exp (4)
+                      Exp (4)
+                        ID: a
+                      ASSIGNOP
+                      Exp (4)
+                        INT: 2
+                    SEMI
+                RC
+      RC
