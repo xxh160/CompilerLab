@@ -1,21 +1,2 @@
-Program (1)
-  ExtDef (1)
-    Specifier (1)
-      TYPE: float
-    FunDec (1)
-      ID: sub
-      LP
-      RP
-    CompSt (1)
-      LC
-      StmtList (2)
-        Stmt (2)
-          RETURN
-          Exp (2)
-            Exp (2)
-              INT: 10
-            MINUS
-            Exp (2)
-              FLOAT: 0.005500
-          SEMI
-      RC
+Error type B at Line 2: extraneous input ';' expecting {<EOF>, TYPE, 'struct'}.
+Error type B at Line 7: mismatched input '}' expecting ID.
