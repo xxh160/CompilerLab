@@ -24,7 +24,7 @@ public class CmmErrorListener implements ANTLRErrorListener {
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
         this.error = true;
-        System.err.println("Error type B at Line " + line + ": " + "position: " + charPositionInLine + " " + msg + ".");
+        System.err.println("Error type B at Line " + line + ": " + "position: " + charPositionInLine + ", " + msg + ".");
     }
 
     @Override
