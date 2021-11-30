@@ -27,7 +27,7 @@ run: compile
 antlr: $(LFILE) $(PFILE) 
 	$(ANTLR) $(PFILE) $(LFILE)
 
-test: compile
+test: clean antlr compile
 	$(call git_commit, "test")
 	cd classes && $(JAVA) -classpath .:$(ANTLRPATH) Main ../tests/test3.cmm 2> ../tests/actual.txt
 	diff -a tests/expected.txt tests/actual.txt > tests/out.txt
