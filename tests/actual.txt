@@ -8,12 +8,14 @@ Program (1)
       RP
     CompSt (1)
       LC
-      Exception in thread "main" java.lang.NullPointerException: Cannot invoke "java.util.List.size()" because "ctx.children" is null
-	at CmmParserListenerImpl.enterDefList(CmmParserListenerImpl.java:175)
-	at CmmParser$DefListContext.enterRule(CmmParser.java:1149)
-	at org.antlr.v4.runtime.tree.ParseTreeWalker.enterRule(ParseTreeWalker.java:50)
-	at org.antlr.v4.runtime.tree.ParseTreeWalker.walk(ParseTreeWalker.java:33)
-	at org.antlr.v4.runtime.tree.ParseTreeWalker.walk(ParseTreeWalker.java:36)
-	at org.antlr.v4.runtime.tree.ParseTreeWalker.walk(ParseTreeWalker.java:36)
-	at org.antlr.v4.runtime.tree.ParseTreeWalker.walk(ParseTreeWalker.java:36)
-	at Main.main(Main.java:21)
+            StmtList (2)
+        Stmt (2)
+          RETURN
+          Exp (2)
+            Exp (2)
+              INT: 10
+            MINUS
+            Exp (2)
+              FLOAT: 0.005500
+          SEMI
+      RC

@@ -251,12 +251,14 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterEveryRule(ParserRuleContext parserRuleContext) {
+        if (parserRuleContext.children == null) return;
         this.printSpace();
         this.incSpace();
     }
 
     @Override
     public void exitEveryRule(ParserRuleContext parserRuleContext) {
+        if (parserRuleContext.children == null) return;
         this.decSpace();
     }
 }
