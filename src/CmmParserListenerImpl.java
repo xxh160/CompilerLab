@@ -246,7 +246,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void visitErrorNode(ErrorNode errorNode) {
-        System.err.println(errorNode.getSymbol().getText());
     }
 
     @Override
