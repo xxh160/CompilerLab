@@ -1,32 +1,45 @@
-import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.Parser;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 public class CmmErrorListener implements ANTLRErrorListener {
 
-    public static final CmmErrorListener INSTANCE = new CmmErrorListener();
+    public static CmmErrorListener INSTANCE;
+
+    public static void init(CmmParser parser){
+        INSTANCE = new CmmErrorListener(parser);
+    }
 
     private boolean error;
     private final ArrayList<Integer> errorLines;
+    private final CmmParser parser;
 
     public boolean hasError() {
         return this.error;
     }
 
-    private CmmErrorListener() {
+    private CmmErrorListener(CmmParser parser) {
         this.error = false;
         this.errorLines = new ArrayList<>();
+        this.parser = parser;
     }
 
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
         this.error = true;
+        if (msg.startsWith("array size must be an integer constant")){
+            Token token = (CommonToken) offendingSymbol;
+            int s = token.getTokenIndex() - 1;
+            TokenStream stream = this.parser.getTokenStream();
+            while (token.getType() != CmmParser.ID && token.getType() != CmmParser.FLOAT) {
+                token = stream.get(s--);
+            }
+            line = token.getLine();
+        }
         if (this.errorLines.contains(line)) return;
         this.errorLines.add(line);
         System.err.println("Error type B at Line " + line + ": " + msg + ".");

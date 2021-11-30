@@ -11,9 +11,12 @@ public class Main {
     public static void main(String[] args) throws IOException {
         CmmLexer lexer = new CmmLexerImpl(new ANTLRInputStream(new FileInputStream(args[0])));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
+
         CmmParser parser = new CmmParser(tokens);
+        CmmErrorListener.init(parser);
         parser.removeErrorListener(ConsoleErrorListener.INSTANCE);
         parser.addErrorListener(CmmErrorListener.INSTANCE);
+
         ParseTreeWalker walker = new ParseTreeWalker();
         CmmParserListener baseListener = new CmmParserListenerImpl(parser);
         CmmParser.ProgramContext programContext = parser.program();
