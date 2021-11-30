@@ -16,7 +16,7 @@ Program (1)
                 ID: a
               ASSIGNOP
               Exp (2)
-                INT: 2
+                ID: b
             ASSIGNOP
             Exp (2)
               Exp (2)
