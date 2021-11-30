@@ -29,7 +29,7 @@ antlr: $(LFILE) $(PFILE)
 
 test: compile
 	$(call git_commit, "test")
-	cd classes && $(JAVA) -classpath .:$(ANTLRPATH) Main ../tests/test3.cmm > ../tests/out
+	cd classes && $(JAVA) -classpath .:$(ANTLRPATH) Main ../tests/test3.cmm 2> ../tests/out.txt
 
 clean:
 	rm -f $(ANTLR_GEN)/*.tokens
