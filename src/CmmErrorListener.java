@@ -42,15 +42,17 @@ public class CmmErrorListener implements ANTLRErrorListener {
             Token token = (CommonToken) offendingSymbol;
             int s = token.getTokenIndex() - 1;
             TokenStream stream = this.parser.getTokenStream();
-            while (isEnd(stream, s)) {
+            List<Integer> errors = new ArrayList<>();
+            while (!isEnd(stream, s)) {
                 token = stream.get(s--);
                 if (token.getType() == CmmParser.ID || token.getType() == CmmParser.FLOAT) {
                     int l = token.getLine();
                     if (this.errorLines.contains(l)) continue;
                     this.errorLines.add(l);
-                    System.err.println("Error type B at Line " + line + ": " + msg + ".");
+                    errors.add(0, l);
                 }
             }
+            for (int l : errors) System.err.println("Error type B at Line " + l + ": " + msg + ".");
             return;
         }
         if (this.errorLines.contains(line)) return;
