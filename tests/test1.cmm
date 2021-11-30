@@ -1,4 +1,5 @@
-int main() {
-    int i = 0;
-    int j = ~i;
+int main(){
+ int i
+ int j;
+ int k
 }

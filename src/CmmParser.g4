@@ -5,7 +5,7 @@ options {
 }
 
 // high level definitions
-program: extDef*;
+program: extDef* EOF;
 
 extDef: specifier extDecList? SEMI
       | specifier funDec compSt;
@@ -19,7 +19,7 @@ specifier: TYPE
 structSpecifier: STRUCT ID? LC def* RC
                | STRUCT ID;
 
-// declarators
+// declaratorshttp://139.224.195.50:3000/
 varDec: ID (LB INT RB)*;
 
 funDec: ID LP varList? RP;
