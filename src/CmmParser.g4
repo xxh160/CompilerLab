@@ -70,6 +70,7 @@ exp: exp ASSIGNOP exp
    | exp DOT ID
    | ID
    | INT
-   | FLOAT;
+   | FLOAT
+   ;
 
 args: exp (COMMA exp)*;
