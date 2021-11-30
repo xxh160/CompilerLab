@@ -39,7 +39,7 @@ clean:
 	rm -rf classes
 	rm -rf out
 
-submit: clean
+submit: compile clean
 	git gc
 	bash $(WORK_DIR)/$(SUBMIT)
 
