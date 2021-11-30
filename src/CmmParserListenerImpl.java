@@ -172,6 +172,7 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void enterDefList(CmmParser.DefListContext ctx) {
+        if (ctx.children.size() == 0) return;
         System.err.println("DefList (" + ctx.start.getLine() + ")");
     }
 
