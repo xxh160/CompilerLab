@@ -65,7 +65,7 @@ exp: exp DOT ID
    | exp RELOP    exp
    | exp AND      exp
    | exp OR       exp
-   | <assco=right> exp ASSIGNOP exp
+   | <assoc=right> exp ASSIGNOP exp
    | LP exp RP
    | ID LP args* RP
    | ID
