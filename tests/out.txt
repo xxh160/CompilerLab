@@ -1,4 +1,4 @@
-1,2c1,33
+1,2c1,28
 < Error type B at Line 2: extraneous input ';' expecting {<EOF>, 'struct', TYPE}.
 < Error type B at Line 7: mismatched input '}' expecting ID.
 \ No newline at end of file
@@ -17,22 +17,17 @@
 >         Stmt (2)
 >           Exp (2)
 >             Exp (2)
->               MINUS
 >               Exp (2)
->                 ID: f
->                 LP
->                 Args (2)
->                   Exp (2)
->                     INT: 0
->                 RP
->             PLUS
->             Exp (2)
+>                 ID: a
+>               ASSIGNOP
 >               Exp (2)
 >                 INT: 2
->               STAR
+>             ASSIGNOP
+>             Exp (2)
 >               Exp (2)
->                 MINUS
->                 Exp (2)
->                   INT: 3
+>                 INT: 3
+>               AND
+>               Exp (2)
+>                 INT: 7
 >           SEMI
 >       RC
