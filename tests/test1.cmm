@@ -2,8 +2,8 @@ int main() {
     struct {
         int c;
         int b;
-    } d[1.0][1.1];
-    int i[1.1] = 3;
+    } d;
+    int i;
     i[2] = 5;
     return 0;
 }

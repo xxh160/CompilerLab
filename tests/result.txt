@@ -1,1 +1,2 @@
 Error type B at Line 5: array size must be an integer constant.
+Error type B at Line 6: array size must be an integer constant.
