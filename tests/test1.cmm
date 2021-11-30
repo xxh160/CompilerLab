@@ -2,7 +2,7 @@ int main() {
     struct {
         int c;
         int b;
-    } d;
+    } d[1.0][1.1];
     int i = 1 - 2;
     return 0;
 }
