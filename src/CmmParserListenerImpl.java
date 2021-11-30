@@ -2,6 +2,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+
 public class CmmParserListenerImpl implements CmmParserListener {
 
     private int space;
@@ -17,6 +20,23 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     private void printSpace() {
         for (int i = 0; i < this.space; ++i) System.err.print(" ");
+    }
+
+    private String parseDouble(String i) {
+        double f = Double.parseDouble(i);
+        return new DecimalFormat("0.000000").format(f);
+    }
+
+    private String parseInteger(String si) {
+        long res;
+        if (si.startsWith("0x") || si.startsWith("0X")) {
+            res = new BigInteger(si.substring(2), 16).longValue();
+        } else if (si.startsWith("0") && si.length() > 1) {
+            res = new BigInteger(si.substring(1), 8).longValue();
+        } else {
+            res = new BigInteger(si).longValue();
+        }
+        return String.valueOf(res);
     }
 
     public CmmParserListenerImpl(CmmParser parser) {
@@ -49,7 +69,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitExtDecList(CmmParser.ExtDecListContext ctx) {
-
     }
 
     @Override
@@ -59,7 +78,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitSpecifier(CmmParser.SpecifierContext ctx) {
-
     }
 
     @Override
@@ -69,7 +87,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitStructSpecifier(CmmParser.StructSpecifierContext ctx) {
-
     }
 
     @Override
@@ -79,7 +96,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitVarDec(CmmParser.VarDecContext ctx) {
-
     }
 
     @Override
@@ -89,7 +105,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitFunDec(CmmParser.FunDecContext ctx) {
-
     }
 
     @Override
@@ -108,7 +123,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitParamDec(CmmParser.ParamDecContext ctx) {
-
     }
 
     @Override
@@ -118,7 +132,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitCompSt(CmmParser.CompStContext ctx) {
-
     }
 
     @Override
@@ -128,7 +141,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitStmt(CmmParser.StmtContext ctx) {
-
     }
 
     @Override
@@ -138,7 +150,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitDef(CmmParser.DefContext ctx) {
-
     }
 
     @Override
@@ -148,7 +159,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitDecList(CmmParser.DecListContext ctx) {
-
     }
 
     @Override
@@ -158,7 +168,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitDec(CmmParser.DecContext ctx) {
-
     }
 
     @Override
@@ -168,7 +177,6 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitExp(CmmParser.ExpContext ctx) {
-
     }
 
     @Override
@@ -178,27 +186,30 @@ public class CmmParserListenerImpl implements CmmParserListener {
 
     @Override
     public void exitArgs(CmmParser.ArgsContext ctx) {
-
     }
 
     @Override
     public void visitTerminal(TerminalNode terminalNode) {
-        this.printSpace();
         int type = terminalNode.getSymbol().getType();
+        if (type == CmmParser.EOF) return;
+        this.printSpace();
         System.err.print(this.parser.getVocabulary().getSymbolicName(type));
+        String text = terminalNode.getSymbol().getText();
         if (type == CmmParser.TYPE || type == CmmParser.ID) {
             System.err.print(": ");
-            System.err.println(terminalNode.getSymbol().getText());
+            System.err.print(text);
         } else if (type == CmmParser.INT) {
             System.err.print(": ");
+            System.err.print(this.parseInteger(text));
         } else if (type == CmmParser.FLOAT) {
             System.err.print(": ");
+            System.err.print(this.parseDouble(text));
         }
+        System.err.println();
     }
 
     @Override
     public void visitErrorNode(ErrorNode errorNode) {
-        this.printSpace();
     }
 
     @Override

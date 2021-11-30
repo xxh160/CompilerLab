@@ -1,3 +1,8 @@
-float sub(){
-  return 10 - 5.5e-3;
-   }
+int add(int a, int b){
+   return a+b;
+}
+
+int main() {
+    add(1,2)
+    return 0;
+}

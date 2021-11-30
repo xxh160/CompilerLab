@@ -20,7 +20,9 @@ structSpecifier: STRUCT ID? LC def* RC
                | STRUCT ID;
 
 // declarators
-varDec: ID (LB INT RB)*;
+varDec: ID (LB INT RB)* { notifyErrorListeners("Error index type"); }
+      | ID (LB INT RB)* (LB (FLOAT|ID) RB) (LB (INT|FLOAT|ID) RB)* { notifyErrorListeners("Error index type"); }
+      ;
 
 funDec: ID LP varList? RP;
 
