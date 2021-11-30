@@ -25,7 +25,7 @@ tag: ID;
 
 // declarators
 varDec: ID (LB INT RB)*
-      | ID (LB INT RB)* (LB (FLOAT | ID) RB) (LB (INT | FLOAT | ID) RB)* { notifyErrorListeners ("array size must be an integer constant"); }
+      | ID (LB INT RB)* (LB (FLOAT|ID) RB) (LB (INT|FLOAT|ID) RB)* { notifyErrorListeners ("array size must be an integer constant"); }
       ;
 
 funDec: ID LP varList? RP;
@@ -54,20 +54,18 @@ decList: dec (COMMA dec)*;
 dec: varDec (ASSIGNOP exp)*;
 
 // expressions and args
-exp: exp LB exp RB
+exp: ID LP args* RP
+   | exp LB exp RB
    | exp DOT ID
-   | <assoc=right> MINUS exp
    | <assoc=right> NOT exp
-   | exp STAR     exp
-   | exp DIV      exp
-   | exp PLUS     exp
-   | exp MINUS    exp
-   | exp RELOP    exp
-   | exp AND      exp
-   | exp OR       exp
+   | <assoc=right> MINUS exp
+   | exp (DIV|STAR) exp
+   | exp (MINUS|PLUS) exp
+   | exp RELOP exp
+   | exp AND exp
+   | exp OR exp
    | <assoc=right> exp ASSIGNOP exp
    | LP exp RP
-   | ID LP args* RP
    | ID
    | INT
    | FLOAT
