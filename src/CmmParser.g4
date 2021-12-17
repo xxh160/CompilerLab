@@ -7,17 +7,20 @@ options {
 // high level definitions
 program: extDef* EOF;
 
-extDef: specifier extDecList? SEMI
-      | specifier funDec compSt;
+extDef: specifier extDecList? SEMI #ExtDefVars
+      | specifier funDec compSt #ExtDefFuc
+      ;
 
 extDecList: varDec (COMMA varDec)*;
 
 // specifilers
-specifier: TYPE
-         | structSpecifier;
+specifier: TYPE #SpecifierType
+         | structSpecifier #SpecifierStruct
+         ;
 
-structSpecifier: STRUCT optTag LC defList RC
-               | STRUCT tag;
+structSpecifier: STRUCT optTag LC defList RC #SSWithBody
+               | STRUCT tag #SSWithoutBody
+               ;
 
 optTag: ID?;
 
@@ -39,10 +42,11 @@ compSt: LC defList stmtList RC;
 
 stmtList: stmt*;
 
-stmt: compSt
-    | RETURN? exp SEMI
-    | IF LP exp RP stmt (ELSE stmt)?
-    | WHILE LP exp RP stmt;
+stmt: compSt #StmtChildScope
+    | RETURN? exp SEMI #StmtReturn
+    | IF LP exp RP stmt (ELSE stmt)? #StmtIf
+    | WHILE LP exp RP stmt #StmtWhile
+    ;
 
 // local definitions
 defList: def*;
@@ -54,21 +58,21 @@ decList: dec (COMMA dec)*;
 dec: varDec (ASSIGNOP exp)*;
 
 // expressions and args
-exp: ID LP args* RP
-   | exp LB exp RB
-   | exp DOT ID
-   | <assoc=right> NOT exp
-   | <assoc=right> MINUS exp
-   | exp (DIV|STAR) exp
-   | exp (MINUS|PLUS) exp
-   | exp RELOP exp
-   | exp AND exp
-   | exp OR exp
-   | <assoc=right> exp ASSIGNOP exp
-   | LP exp RP
-   | ID
-   | INT
-   | FLOAT
+exp: ID LP args* RP #ExpFuncCall
+   | exp LB exp RB #ExpArrayRef
+   | exp DOT ID #ExpStructRef
+   | <assoc=right> NOT exp #ExpNot
+   | <assoc=right> MINUS exp #ExpNegative
+   | exp (DIV|STAR) exp #ExpMulOrDiv
+   | exp (MINUS|PLUS) exp #ExpPlusOrMinus
+   | exp RELOP exp #ExpCompare
+   | exp AND exp #ExpAnd
+   | exp OR exp #ExpOr
+   | <assoc=right> exp ASSIGNOP exp #ExpAssign
+   | LP exp RP #ExpParenthesis
+   | ID #ExpId
+   | INT #ExpInt
+   | FLOAT #ExpFloat
    ;
 
 args: exp (COMMA exp)*;

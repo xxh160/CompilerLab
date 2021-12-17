@@ -21,6 +21,7 @@ public class Main {
         CmmParserListener baseListener = new CmmParserListenerImpl(parser);
         CmmParser.ProgramContext programContext = parser.program();
         if (CmmErrorListener.INSTANCE.hasError()) return;
+
         walker.walk(baseListener, programContext);
     }
 

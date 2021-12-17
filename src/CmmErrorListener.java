@@ -30,8 +30,7 @@ public class CmmErrorListener implements ANTLRErrorListener {
 
     private boolean isEnd(TokenStream stream, int cur) {
         if (cur == 0) return true;
-        if (stream.get(cur).getType() == CmmParser.LB && stream.get(cur - 1).getType() == CmmParser.ID) return true;
-        return false;
+        return stream.get(cur).getType() == CmmParser.LB && stream.get(cur - 1).getType() == CmmParser.ID;
     }
 
     @Override
