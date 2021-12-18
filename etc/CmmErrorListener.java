@@ -10,12 +10,11 @@ public class CmmErrorListener implements ANTLRErrorListener {
 
     public static CmmErrorListener INSTANCE;
 
-    public static void init(CmmParser parser){
+    public static void init(CmmParser parser) {
         INSTANCE = new CmmErrorListener(parser);
     }
 
     private boolean error;
-    private final ArrayList<Integer> errorLines;
     private final CmmParser parser;
 
     public boolean hasError() {
@@ -24,7 +23,6 @@ public class CmmErrorListener implements ANTLRErrorListener {
 
     private CmmErrorListener(CmmParser parser) {
         this.error = false;
-        this.errorLines = new ArrayList<>();
         this.parser = parser;
     }
 
@@ -33,11 +31,12 @@ public class CmmErrorListener implements ANTLRErrorListener {
         return stream.get(cur).getType() == CmmParser.LB && stream.get(cur - 1).getType() == CmmParser.ID;
     }
 
+    // 用作 array index 检测, 没有 errorLine 的限制
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
         this.error = true;
         // maybe many errors
-        if (msg.startsWith("array size must be an integer constant")){
+        if (msg.startsWith("Index must be an integer")) {
             Token token = (CommonToken) offendingSymbol;
             int s = token.getTokenIndex() - 1;
             TokenStream stream = this.parser.getTokenStream();
@@ -46,17 +45,13 @@ public class CmmErrorListener implements ANTLRErrorListener {
                 token = stream.get(s--);
                 if (token.getType() == CmmParser.ID || token.getType() == CmmParser.FLOAT) {
                     int l = token.getLine();
-                    if (this.errorLines.contains(l)) continue;
-                    this.errorLines.add(l);
                     errors.add(0, l);
                 }
             }
-            for (int l : errors) System.err.println("Error type B at Line " + l + ": " + msg + ".");
+            for (int l : errors) System.err.println("Error type 12 at Line " + l + ": " + msg + ".");
             return;
         }
-        if (this.errorLines.contains(line)) return;
-        this.errorLines.add(line);
-        System.err.println("Error type B at Line " + line + ": " + msg + ".");
+        System.err.println("Error type 12 at Line " + line + ": " + msg + ".");
     }
 
     @Override

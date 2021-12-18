@@ -1,8 +1,10 @@
 import java.util.Arrays;
 
+// 普通变量存其变量名和 type, 通过变量名索引
+// struct 和 function 的变量名和其 type 中的 name 相同
 public class SymbolTable {
 
-    private static final int HASH_TABLE_SIZE = 0x3fff;
+    public static final int HASH_TABLE_SIZE = 0x3fff;
 
     private final Symbol[] table;
 
@@ -36,6 +38,10 @@ public class SymbolTable {
 
     public Symbol get(String name) {
         return this.table[this.getIndex(name)];
+    }
+
+    public boolean contains(String name) {
+        return this.table[this.getIndex(name)] != null;
     }
 
 }

@@ -1,7 +1,41 @@
+// 本来只是个链表节点的
+// 这里却是代替了链表自己的功能了
 public class FieldList {
 
-    private String name;
-    private Type type;
+    private final String name;
+    private final Type type;
     private FieldList next;
+
+    public FieldList(String name, Type type) {
+        this.name = name;
+        this.type = type;
+        this.next = null;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Type getType() {
+        return this.type;
+    }
+
+    public FieldList getNext() {
+        return this.next;
+    }
+
+    public void setNext(FieldList next) {
+        this.next = next;
+    }
+
+    public boolean equals(FieldList f) {
+        if (f == this) return true;
+        if (f == null) return false;
+        if (!this.type.isEquivalentType(f.getType())) return false;
+        FieldList curS = next;
+        FieldList curF = f.getNext();
+        if (curS == null) return curF == null;
+        return curS.equals(curF);
+    }
 
 }

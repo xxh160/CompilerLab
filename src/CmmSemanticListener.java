@@ -6,22 +6,44 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class CmmSemanticListener implements CmmParserListener {
 
-    private final ParseTreeProperty<Type> values;
+    private final ParseTreeProperty<Type> types;
+    private final ParseTreeProperty<FieldList> fields;
     private final SymbolTable st;
 
     public CmmSemanticListener() {
-        this.values = new ParseTreeProperty<>();
+        this.types = new ParseTreeProperty<>();
+        this.fields = new ParseTreeProperty<>();
         this.st = new SymbolTable();
     }
 
     private Type popType(ParseTree node) {
-        Type type = this.values.get(node);
-        this.values.removeFrom(node);
+        Type type = this.types.get(node);
+        this.types.removeFrom(node);
         return type;
     }
 
     private void pushType(ParseTree node, Type type) {
-        this.values.put(node, type);
+        this.types.put(node, type);
+    }
+
+    private FieldList popField(ParseTree node) {
+        FieldList field = this.fields.get(node);
+        this.fields.removeFrom(node);
+        return field;
+    }
+
+    private void pushField(ParseTree node, FieldList field) {
+        this.fields.put(node, field);
+    }
+
+    private void notifyError(ErrorType et, int line) {
+        String s = "Error type " +
+                et.getVal() +
+                " at Line " +
+                line +
+                ": " +
+                et.getMsg();
+        System.err.println(s);
     }
 
     @Override
@@ -33,6 +55,7 @@ public class CmmSemanticListener implements CmmParserListener {
     public void exitProgram(CmmParser.ProgramContext ctx) {
     }
 
+    // 全局变量的定义
     @Override
     public void enterExtDef(CmmParser.ExtDefContext ctx) {
 
@@ -49,7 +72,8 @@ public class CmmSemanticListener implements CmmParserListener {
         // extDef: specifier extDecList? SEMI
         if (father.getRuleIndex() == CmmParser.RULE_extDef) {
             CmmParser.ExtDefContext f = (CmmParser.ExtDefContext) father;
-            Type type = this.popType(f);
+            Type type = this.popType(f.specifier());
+            // inh 传参
             this.pushType(ctx, type);
         }
     }
@@ -60,23 +84,44 @@ public class CmmSemanticListener implements CmmParserListener {
 
     @Override
     public void enterSpecifier(CmmParser.SpecifierContext ctx) {
-
     }
 
+    // 可以通过 ctx.XXX() 是否为 null 判断进入哪条分支
     @Override
     public void exitSpecifier(CmmParser.SpecifierContext ctx) {
-        System.out.println(ctx.TYPE());
-        System.out.println(ctx.structSpecifier());
+        Type type;
+        if (ctx.TYPE() != null) {
+            // TYPE, 直接处理
+            if (ctx.TYPE().getText().equals("int")) type = new Int();
+            else type = new Float();
+        } else type = this.popType(ctx.structSpecifier()); // structSpecifier
+        this.pushType(ctx, type);
     }
 
     @Override
     public void enterStructSpecifier(CmmParser.StructSpecifierContext ctx) {
-
     }
 
     @Override
     public void exitStructSpecifier(CmmParser.StructSpecifierContext ctx) {
-
+        // structSpecifier with body
+        if (ctx.optTag() != null) {
+            // 获取 defList 的 def
+            // 构造 struct, 看 optTag 是否有名字来判断加入符号表与否
+        }
+        // without body
+        // structSpecifier: STRUCT tag
+        // 查符号表, 如果没有直接报错, type 17
+        String structName = ctx.tag().getText();
+        if (!this.st.contains(structName)) {
+            this.notifyError(ErrorType.UndefinedStruct, ctx.getStart().getLine());
+            // 错误恢复, 假设有这个 struct
+            Structure s = new Structure(ctx.tag().getText(), null);
+            this.pushType(ctx, s);
+            return;
+        }
+        Symbol symbol = this.st.get(structName);
+        this.pushType(ctx, symbol.getType());
     }
 
     @Override
@@ -101,12 +146,19 @@ public class CmmSemanticListener implements CmmParserListener {
 
     @Override
     public void enterVarDec(CmmParser.VarDecContext ctx) {
-
+        // extDecList: varDec (COMMA varDec)*
+        // 多个 varDec 会多次 enter
+        ParserRuleContext father = ctx.getParent();
+        if (ctx.getParent().getRuleIndex() == CmmParser.RULE_extDecList) {
+            CmmParser.ExtDecListContext f = (CmmParser.ExtDecListContext) father;
+            Type type = this.popType(f);
+            this.pushType(ctx, type);
+        }
     }
 
     @Override
     public void exitVarDec(CmmParser.VarDecContext ctx) {
-
+        
     }
 
     @Override
@@ -209,13 +261,154 @@ public class CmmSemanticListener implements CmmParserListener {
 
     }
 
+    // 以下是 exp 备选分支
     @Override
-    public void enterExp(CmmParser.ExpContext ctx) {
+    public void enterExpAssign(CmmParser.ExpAssignContext ctx) {
 
     }
 
     @Override
-    public void exitExp(CmmParser.ExpContext ctx) {
+    public void exitExpAssign(CmmParser.ExpAssignContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpOr(CmmParser.ExpOrContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpOr(CmmParser.ExpOrContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpStructRef(CmmParser.ExpStructRefContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpStructRef(CmmParser.ExpStructRefContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpMulOrDiv(CmmParser.ExpMulOrDivContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpMulOrDiv(CmmParser.ExpMulOrDivContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpFuncCall(CmmParser.ExpFuncCallContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpFuncCall(CmmParser.ExpFuncCallContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpCompare(CmmParser.ExpCompareContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpCompare(CmmParser.ExpCompareContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpNegative(CmmParser.ExpNegativeContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpNegative(CmmParser.ExpNegativeContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpParenthesis(CmmParser.ExpParenthesisContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpParenthesis(CmmParser.ExpParenthesisContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpFloat(CmmParser.ExpFloatContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpFloat(CmmParser.ExpFloatContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpAnd(CmmParser.ExpAndContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpAnd(CmmParser.ExpAndContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpPlusOrMinus(CmmParser.ExpPlusOrMinusContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpPlusOrMinus(CmmParser.ExpPlusOrMinusContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpNot(CmmParser.ExpNotContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpNot(CmmParser.ExpNotContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpArrayRef(CmmParser.ExpArrayRefContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpArrayRef(CmmParser.ExpArrayRefContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpId(CmmParser.ExpIdContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpId(CmmParser.ExpIdContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpInt(CmmParser.ExpIntContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpInt(CmmParser.ExpIntContext ctx) {
 
     }
 
@@ -231,18 +424,12 @@ public class CmmSemanticListener implements CmmParserListener {
 
     @Override
     public void visitTerminal(TerminalNode terminalNode) {
-        int t = terminalNode.getSymbol().getType();
-        if (t == CmmParser.TYPE) {
-            Type type;
-            if (terminalNode.getSymbol().getText().equals("int")) type = new Int();
-            else type = new Float();
-            this.pushType(terminalNode, type);
-        }
+
+
     }
 
     @Override
     public void visitErrorNode(ErrorNode errorNode) {
-
     }
 
     // 先于具体的 enterRule 调用

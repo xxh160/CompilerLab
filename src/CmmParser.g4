@@ -28,7 +28,7 @@ tag: ID;
 
 // declarators
 varDec: ID (LB INT RB)*
-      | ID (LB INT RB)* (LB (FLOAT|ID) RB) (LB (INT|FLOAT|ID) RB)* { notifyErrorListeners ("array size must be an integer constant"); }
+      | ID (LB INT RB)* (LB (FLOAT|ID) RB) (LB (INT|FLOAT|ID) RB)* { notifyErrorListeners ("Index must be an integer"); }
       ;
 
 funDec: ID LP varList? RP;
@@ -58,21 +58,21 @@ decList: dec (COMMA dec)*;
 dec: varDec (ASSIGNOP exp)*;
 
 // expressions and args
-exp: ID LP args* RP // #ExpFuncCall
-   | exp LB exp RB // #ExpArrayRef
-   | exp DOT ID // #ExpStructRef
-   | <assoc=right> NOT exp // #ExpNot
-   | <assoc=right> MINUS exp // #ExpNegative
-   | exp (DIV|STAR) exp // #ExpMulOrDiv
-   | exp (MINUS|PLUS) exp // #ExpPlusOrMinus
-   | exp RELOP exp // #ExpCompare
-   | exp AND exp // #ExpAnd
-   | exp OR exp // #ExpOr
-   | <assoc=right> exp ASSIGNOP exp // #ExpAssign
-   | LP exp RP // #ExpParenthesis
-   | ID // #ExpId
-   | INT // #ExpInt
-   | FLOAT // #ExpFloat
+exp: ID LP args* RP #ExpFuncCall
+   | exp LB exp RB #ExpArrayRef
+   | exp DOT ID #ExpStructRef
+   | <assoc=right> NOT exp #ExpNot
+   | <assoc=right> MINUS exp #ExpNegative
+   | exp (DIV|STAR) exp #ExpMulOrDiv
+   | exp (MINUS|PLUS) exp #ExpPlusOrMinus
+   | exp RELOP exp #ExpCompare
+   | exp AND exp #ExpAnd
+   | exp OR exp #ExpOr
+   | <assoc=right> exp ASSIGNOP exp #ExpAssign
+   | LP exp RP #ExpParenthesis
+   | ID #ExpId
+   | INT #ExpInt
+   | FLOAT #ExpFloat
    ;
 
 args: exp (COMMA exp)*;

@@ -1,6 +1,6 @@
 public abstract class Type {
 
-    private final Kind selfKind;
+    protected final Kind selfKind;
 
     public Type(Kind selfK) {
         this.selfKind = selfK;
@@ -9,5 +9,7 @@ public abstract class Type {
     public Kind getSelfKind() {
         return this.selfKind;
     }
-    
+
+    public abstract boolean isEquivalentType(Type t);
+
 }

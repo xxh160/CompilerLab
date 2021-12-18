@@ -1,4 +1,5 @@
+int b, d;
+
 int main() {
-   int a = 1;
-   struct b a = 1;
+   int a, c;
 }

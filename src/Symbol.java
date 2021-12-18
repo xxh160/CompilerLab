@@ -2,6 +2,7 @@ public class Symbol {
 
     private final String name;
     private final Type type;
+    // 散列冲突
     private Symbol next;
 
     public Symbol(String name, Type type) {
@@ -19,7 +20,7 @@ public class Symbol {
     }
 
     public boolean hasNext() {
-        return this.next == null;
+        return this.next != null;
     }
 
     public Symbol getNext() {
