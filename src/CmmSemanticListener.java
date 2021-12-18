@@ -1,5 +1,6 @@
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -13,6 +14,16 @@ public class CmmSemanticListener implements CmmParserListener {
         this.st = new SymbolTable();
     }
 
+    private Type popType(ParseTree node) {
+        Type type = this.values.get(node);
+        this.values.removeFrom(node);
+        return type;
+    }
+
+    private void pushType(ParseTree node, Type type) {
+        this.values.put(node, type);
+    }
+
     @Override
     public void enterProgram(CmmParser.ProgramContext ctx) {
 
@@ -20,7 +31,6 @@ public class CmmSemanticListener implements CmmParserListener {
 
     @Override
     public void exitProgram(CmmParser.ProgramContext ctx) {
-
     }
 
     @Override
@@ -35,12 +45,17 @@ public class CmmSemanticListener implements CmmParserListener {
 
     @Override
     public void enterExtDecList(CmmParser.ExtDecListContext ctx) {
-
+        ParserRuleContext father = ctx.getParent();
+        // extDef: specifier extDecList? SEMI
+        if (father.getRuleIndex() == CmmParser.RULE_extDef) {
+            CmmParser.ExtDefContext f = (CmmParser.ExtDefContext) father;
+            Type type = this.popType(f);
+            this.pushType(ctx, type);
+        }
     }
 
     @Override
     public void exitExtDecList(CmmParser.ExtDecListContext ctx) {
-
     }
 
     @Override
@@ -50,7 +65,8 @@ public class CmmSemanticListener implements CmmParserListener {
 
     @Override
     public void exitSpecifier(CmmParser.SpecifierContext ctx) {
-
+        System.out.println(ctx.TYPE());
+        System.out.println(ctx.structSpecifier());
     }
 
     @Override
@@ -194,152 +210,12 @@ public class CmmSemanticListener implements CmmParserListener {
     }
 
     @Override
-    public void enterOr(CmmParser.OrContext ctx) {
+    public void enterExp(CmmParser.ExpContext ctx) {
 
     }
 
     @Override
-    public void exitOr(CmmParser.OrContext ctx) {
-
-    }
-
-    @Override
-    public void enterMulOrDiv(CmmParser.MulOrDivContext ctx) {
-
-    }
-
-    @Override
-    public void exitMulOrDiv(CmmParser.MulOrDivContext ctx) {
-
-    }
-
-    @Override
-    public void enterInt(CmmParser.IntContext ctx) {
-
-    }
-
-    @Override
-    public void exitInt(CmmParser.IntContext ctx) {
-
-    }
-
-    @Override
-    public void enterArrayRef(CmmParser.ArrayRefContext ctx) {
-
-    }
-
-    @Override
-    public void exitArrayRef(CmmParser.ArrayRefContext ctx) {
-
-    }
-
-    @Override
-    public void enterStructRef(CmmParser.StructRefContext ctx) {
-
-    }
-
-    @Override
-    public void exitStructRef(CmmParser.StructRefContext ctx) {
-
-    }
-
-    @Override
-    public void enterFuncCall(CmmParser.FuncCallContext ctx) {
-
-    }
-
-    @Override
-    public void exitFuncCall(CmmParser.FuncCallContext ctx) {
-
-    }
-
-    @Override
-    public void enterFloat(CmmParser.FloatContext ctx) {
-
-    }
-
-    @Override
-    public void exitFloat(CmmParser.FloatContext ctx) {
-
-    }
-
-    @Override
-    public void enterNot(CmmParser.NotContext ctx) {
-
-    }
-
-    @Override
-    public void exitNot(CmmParser.NotContext ctx) {
-
-    }
-
-    @Override
-    public void enterParenthesis(CmmParser.ParenthesisContext ctx) {
-
-    }
-
-    @Override
-    public void exitParenthesis(CmmParser.ParenthesisContext ctx) {
-
-    }
-
-    @Override
-    public void enterNegative(CmmParser.NegativeContext ctx) {
-
-    }
-
-    @Override
-    public void exitNegative(CmmParser.NegativeContext ctx) {
-
-    }
-
-    @Override
-    public void enterAnd(CmmParser.AndContext ctx) {
-
-    }
-
-    @Override
-    public void exitAnd(CmmParser.AndContext ctx) {
-
-    }
-
-    @Override
-    public void enterPlusOrMinus(CmmParser.PlusOrMinusContext ctx) {
-
-    }
-
-    @Override
-    public void exitPlusOrMinus(CmmParser.PlusOrMinusContext ctx) {
-
-    }
-
-    @Override
-    public void enterCompare(CmmParser.CompareContext ctx) {
-
-    }
-
-    @Override
-    public void exitCompare(CmmParser.CompareContext ctx) {
-
-    }
-
-    @Override
-    public void enterAssign(CmmParser.AssignContext ctx) {
-
-    }
-
-    @Override
-    public void exitAssign(CmmParser.AssignContext ctx) {
-
-    }
-
-    @Override
-    public void enterId(CmmParser.IdContext ctx) {
-
-    }
-
-    @Override
-    public void exitId(CmmParser.IdContext ctx) {
+    public void exitExp(CmmParser.ExpContext ctx) {
 
     }
 
@@ -355,7 +231,13 @@ public class CmmSemanticListener implements CmmParserListener {
 
     @Override
     public void visitTerminal(TerminalNode terminalNode) {
-
+        int t = terminalNode.getSymbol().getType();
+        if (t == CmmParser.TYPE) {
+            Type type;
+            if (terminalNode.getSymbol().getText().equals("int")) type = new Int();
+            else type = new Float();
+            this.pushType(terminalNode, type);
+        }
     }
 
     @Override
@@ -363,13 +245,14 @@ public class CmmSemanticListener implements CmmParserListener {
 
     }
 
+    // 先于具体的 enterRule 调用
     @Override
     public void enterEveryRule(ParserRuleContext parserRuleContext) {
-
     }
 
+    // 后于具体的 exitRule 调用
     @Override
     public void exitEveryRule(ParserRuleContext parserRuleContext) {
-
     }
+
 }

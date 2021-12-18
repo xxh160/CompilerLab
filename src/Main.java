@@ -18,7 +18,7 @@ public class Main {
         parser.addErrorListener(CmmErrorListener.INSTANCE);
 
         ParseTreeWalker walker = new ParseTreeWalker();
-        CmmParserListener baseListener = new CmmParserListenerImpl(parser);
+        CmmSemanticListener baseListener = new CmmSemanticListener();
         CmmParser.ProgramContext programContext = parser.program();
         if (CmmErrorListener.INSTANCE.hasError()) return;
 
