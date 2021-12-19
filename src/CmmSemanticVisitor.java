@@ -160,12 +160,21 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         if (!this.st.contains(name)) {
             this.notifyError(ErrorType.UndefinedStruct, ctx.tag().getStart().getLine());
             // 错误恢复, 假设有这个 struct
-            StructureT s = new StructureT(name, null);
+            StructureT s = new StructureT("", null);
             i.setT(s);
             i.setError(true);
             return i;
         }
-        i.setT(this.st.get(name).getType());
+        Type t = this.st.get(name).getType();
+        if (!StructureT.isStructure(t)) {
+            this.notifyError(ErrorType.UndefinedStruct, ctx.tag().getStart().getLine());
+            // 错误恢复, 假设有这个 struct
+            StructureT s = new StructureT("", null);
+            i.setT(s);
+            i.setError(true);
+            return i;
+        }
+        i.setT(t);
         return i;
     }
 
