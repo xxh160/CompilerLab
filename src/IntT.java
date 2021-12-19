@@ -1,6 +1,6 @@
-public class Int extends Type {
+public class IntT extends Type {
 
-    public Int() {
+    public IntT() {
         super(Kind.INT);
     }
 
@@ -10,4 +10,10 @@ public class Int extends Type {
         if (t == null) return false;
         return this.selfKind == t.getSelfKind();
     }
+
+    public static boolean isInt(Type t) {
+        if (t == null) return false;
+        return t.getSelfKind() == Kind.INT;
+    }
+
 }

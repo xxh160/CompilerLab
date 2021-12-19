@@ -34,7 +34,7 @@ public enum ErrorType {
     UndefinedStructField(14, "Non-existent field"),
     // 结构体中域名重复定义 ( 指同一结构体中 ) 或在定义时对域进行初始化
     // 例如 struct A { int a = 0; }
-    IllegalStruct(15, "Refined field or illegally initialized field"),
+    IllegalStruct(15, "Redefined field or illegally initialized field"),
     // 结构体的名字与前面定义过的结构体或变量的名字重复
     DuplicatedStructName(16, "Duplicated structure name"),
     // 直接使用未定义过的结构体来定义变量

@@ -26,22 +26,39 @@ public class SymbolTable {
     }
 
     public void put(Symbol n) {
+        if (n == null) return;
         int index = this.getIndex(n.getName());
         if (this.table[index] != null) {
             Symbol cur = this.table[index];
-            while (cur.hasNext()) cur = cur.getNext();
-            cur.setNext(n);
+            cur.add(n);
             return;
         }
         this.table[index] = n;
     }
 
     public Symbol get(String name) {
-        return this.table[this.getIndex(name)];
+        if (name == null) return null;
+        int index = this.getIndex(name);
+        if (this.table[index] == null) return null;
+        Symbol cur = this.table[index];
+        while (cur.hasNext()) {
+            if (cur.getName().equals(name)) return cur;
+            cur = cur.getNext();
+        }
+        if (cur.getName().equals(name)) return cur;
+        return null;
     }
 
     public boolean contains(String name) {
-        return this.table[this.getIndex(name)] != null;
+        if (name == null) return false;
+        int index = this.getIndex(name);
+        if (this.table[index] == null) return false;
+        Symbol cur = this.table[index];
+        while (cur.hasNext()) {
+            if (cur.getName().equals(name)) return true;
+            cur = cur.getNext();
+        }
+        return cur.getName().equals(name);
     }
 
 }

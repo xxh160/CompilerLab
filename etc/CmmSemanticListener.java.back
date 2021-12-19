@@ -1,0 +1,673 @@
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ErrorNode;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
+import java.math.BigInteger;
+import java.util.Collections;
+import java.util.List;
+
+public class CmmSemanticListener implements CmmParserListener {
+
+    private final ParseTreeProperty<Type> types;
+    private final ParseTreeProperty<FieldList> fields;
+    private final SymbolTable st;
+
+    public CmmSemanticListener() {
+        this.types = new ParseTreeProperty<>();
+        this.fields = new ParseTreeProperty<>();
+        this.st = new SymbolTable();
+    }
+
+    // 不能 remove, f**k
+    private Type popType(ParseTree node) {
+        return this.types.get(node);
+    }
+
+    private void pushType(ParseTree node, Type type) {
+        this.types.put(node, type);
+    }
+
+    private FieldList popField(ParseTree node) {
+        FieldList field = this.fields.get(node);
+        this.fields.removeFrom(node);
+        return field;
+    }
+
+    private void pushField(ParseTree node, FieldList field) {
+        this.fields.put(node, field);
+    }
+
+    private void notifyError(ErrorType et, int line) {
+        String s = "Error type " +
+                et.getVal() +
+                " at Line " +
+                line +
+                ": " +
+                et.getMsg();
+        System.err.println(s);
+    }
+
+    private long parseInteger(String si) {
+        long res;
+        if (si.startsWith("0x") || si.startsWith("0X")) {
+            res = new BigInteger(si.substring(2), 16).longValue();
+        } else if (si.startsWith("0") && si.length() > 1) {
+            res = new BigInteger(si.substring(1), 8).longValue();
+        } else {
+            res = new BigInteger(si).longValue();
+        }
+        return res;
+    }
+
+    private void passFatherInhType(ParserRuleContext ctx) {
+        ParserRuleContext father = ctx.getParent();
+        Type type = this.popType(father);
+        this.pushType(ctx, type);
+    }
+
+    private void passBrotherInhType(ParserRuleContext bro, ParserRuleContext self) {
+        Type type = this.popType(bro);
+        // inh 传参
+        this.pushType(self, type);
+    }
+
+    private void passChildSynField(ParserRuleContext child, ParserRuleContext ctx) {
+        FieldList f = this.popField(child);
+        this.pushField(ctx, f);
+    }
+
+    private FieldList concatChildFields(List<? extends ParserRuleContext> child) {
+        FieldList res = null;
+        for (ParserRuleContext cur : child) {
+            FieldList cf = this.popField(cur);
+            if (res == null) {
+                res = cf;
+                continue;
+            }
+            res.setNext(cf);
+        }
+        return res;
+    }
+
+    @Override
+    public void enterProgram(CmmParser.ProgramContext ctx) {
+    }
+
+    @Override
+    public void exitProgram(CmmParser.ProgramContext ctx) {
+    }
+
+    // 全局变量的定义
+    @Override
+    public void enterExtDef(CmmParser.ExtDefContext ctx) {
+    }
+
+    @Override
+    public void exitExtDef(CmmParser.ExtDefContext ctx) {
+    }
+
+    @Override
+    public void enterExtDecList(CmmParser.ExtDecListContext ctx) {
+        ParserRuleContext father = ctx.getParent();
+        // extDef: specifier extDecList? SEMI
+        // father.getRuleIndex() == CmmParser.RULE_extDef 恒成立
+        CmmParser.ExtDefContext f = (CmmParser.ExtDefContext) father;
+        this.passBrotherInhType(f.specifier(), ctx);
+    }
+
+    @Override
+    public void exitExtDecList(CmmParser.ExtDecListContext ctx) {
+    }
+
+    @Override
+    public void enterSpecifier(CmmParser.SpecifierContext ctx) {
+    }
+
+    // 可以通过 ctx.XXX() 是否为 null 判断进入哪条分支
+    @Override
+    public void exitSpecifier(CmmParser.SpecifierContext ctx) {
+        Type type;
+        if (ctx.TYPE() != null) {
+            // TYPE, 直接处理
+            if (ctx.TYPE().getText().equals("int")) type = new IntT();
+            else type = new FloatT();
+        } else type = this.popType(ctx.structSpecifier()); // structSpecifier
+        this.pushType(ctx, type);
+    }
+
+    @Override
+    public void enterStructSpecifier(CmmParser.StructSpecifierContext ctx) {
+        // 检查是否是重名 struct
+        // TODO
+    }
+
+    @Override
+    public void exitStructSpecifier(CmmParser.StructSpecifierContext ctx) {
+        // structSpecifier with body
+        if (ctx.optTag() != null) {
+            // 获取 defList 的 field
+            FieldList fs = this.popField(ctx.defList());
+            // 构造 struct, 看 optTag 是否有名字来判断加入符号表与否
+            String name = ctx.optTag().getText();
+            StructureT s = new StructureT(name, fs);
+            if (name.length() != 0) {
+                // 结构体重名, error type 16
+                if (this.st.contains(name)) {
+                    this.notifyError(ErrorType.DuplicatedStructName, ctx.getStart().getLine());
+                } else {
+                    // 新的 struct 类型 插入符号表
+                    Symbol symbol = new Symbol(name, s);
+                    this.st.put(symbol);
+                }
+            }
+            // 返回类型
+            this.pushType(ctx, s);
+            return;
+        }
+        // without body
+        // structSpecifier: STRUCT tag
+        // 查符号表, 如果没有直接报错, type 17
+        String structName = ctx.tag().getText();
+        if (!this.st.contains(structName)) {
+            this.notifyError(ErrorType.UndefinedStruct, ctx.getStart().getLine());
+            // 错误恢复, 假设有这个 struct
+            StructureT s = new StructureT(structName, null);
+            this.pushType(ctx, s);
+            return;
+        }
+        Symbol symbol = this.st.get(structName);
+        this.pushType(ctx, symbol.getType());
+    }
+
+    @Override
+    public void enterOptTag(CmmParser.OptTagContext ctx) {
+    }
+
+    @Override
+    public void exitOptTag(CmmParser.OptTagContext ctx) {
+    }
+
+    @Override
+    public void enterTag(CmmParser.TagContext ctx) {
+    }
+
+    @Override
+    public void exitTag(CmmParser.TagContext ctx) {
+    }
+
+    @Override
+    public void enterVarDec(CmmParser.VarDecContext ctx) {
+        // extDecList: varDec (COMMA varDec)*
+        // dec: varDec (ASSIGNOP exp)*
+        // 多个 varDec 会多次 enter
+        // extDecList 和 dec 都会传入 specifier
+        if (ctx.getParent().getRuleIndex() != CmmParser.RULE_paramDec) {
+            this.passFatherInhType(ctx);
+        } else {
+            // paramDec 兄弟节点传入 specifier
+            // paramDec: specifier varDec
+            CmmParser.ParamDecContext f = (CmmParser.ParamDecContext) ctx.getParent();
+            this.passBrotherInhType(f.specifier(), ctx);
+        }
+    }
+
+    @Override
+    public void exitVarDec(CmmParser.VarDecContext ctx) {
+        // 直接处理
+        String varName = ctx.ID(0).getText();
+        Type type = this.popType(ctx);
+        ArrayT base = null;
+        // ArrayT 类型
+        for (int i = ctx.getChildCount() - 1; i > 0; --i) {
+            TerminalNode cur = (TerminalNode) ctx.getChild(i);
+            int size = 0;
+            int t = cur.getSymbol().getType();
+            if (t == CmmParser.LB || t == CmmParser.RB) continue;
+            if (t == CmmParser.FLOAT || t == CmmParser.ID) {
+                this.notifyError(ErrorType.IllegalArrayIndex, cur.getSymbol().getLine());
+            } else size = (int) this.parseInteger(cur.getText()); // CmmParser.INT
+            if (base == null) base = new ArrayT(type, size);
+            else base = new ArrayT(base, size);
+        }
+        Symbol s;
+        FieldList f;
+        // 不是数组
+        if (base == null) {
+            s = new Symbol(varName, type);
+            f = new FieldList(varName, type);
+        } else {
+            s = new Symbol(varName, base);
+            f = new FieldList(varName, base);
+        }
+        // 如果是 structure 或者 function 内字段, 留到上层处理报错
+        // TODO
+        // 冲突
+        if (this.st.contains(varName)) {
+            this.notifyError(ErrorType.RedefinedVar, ctx.ID(0).getSymbol().getLine());
+        } else this.st.put(s); // 放入符号表
+        // 字段作为综合属性返回
+        this.pushField(ctx, f);
+    }
+
+    @Override
+    public void enterFunDec(CmmParser.FunDecContext ctx) {
+        ParserRuleContext father = ctx.getParent();
+        // extDef: specifier funDec compSt SEMI
+        // father.getRuleIndex() == CmmParser.RULE_extDef 恒成立
+        CmmParser.ExtDefContext f = (CmmParser.ExtDefContext) father;
+        // 传入函数返回类型
+        this.passBrotherInhType(f.specifier(), ctx);
+        // 检测函数是否重名, 重名直接 pass
+        // 函数名重复, error type 4
+        String funcName = ctx.ID().getText();
+        if (this.st.contains(funcName)) {
+            // 后续直接跳过
+            this.popType(f).setError(true);
+            this.notifyError(ErrorType.RedefinedFun, ctx.ID().getSymbol().getLine());
+        }
+    }
+
+    @Override
+    public void exitFunDec(CmmParser.FunDecContext ctx) {
+        // funDec: ID LP varList? RP
+        String funcName = ctx.ID().getText();
+        Type returnType = this.popType(ctx);
+        FunctionT f = new FunctionT(returnType);
+        // 从 varList 中获取 fields
+        if (ctx.varList() != null) {
+            FieldList params = this.popField(ctx.varList());
+            f.setParamList(params);
+        }
+        // 能到这里肯定没有函数重名
+        // 放入符号表
+        Symbol s = new Symbol(funcName, f);
+        this.st.put(s);
+    }
+
+    @Override
+    public void enterVarList(CmmParser.VarListContext ctx) {
+    }
+
+    @Override
+    public void exitVarList(CmmParser.VarListContext ctx) {
+        // 同样同样是拼接 fields
+        FieldList res = this.concatChildFields(ctx.paramDec());
+        this.pushField(ctx, res);
+    }
+
+    @Override
+    public void enterParamDec(CmmParser.ParamDecContext ctx) {
+    }
+
+    @Override
+    public void exitParamDec(CmmParser.ParamDecContext ctx) {
+        // 传递 varDec 字段
+        this.passChildSynField(ctx.varDec(), ctx);
+    }
+
+    @Override
+    public void enterCompSt(CmmParser.CompStContext ctx) {
+        // extDef: specifier funDec compSt
+        if (ctx.getParent().getRuleIndex() == CmmParser.RULE_extDef) {
+            CmmParser.ExtDefContext father = (CmmParser.ExtDefContext) ctx.getParent();
+            this.passBrotherInhType(father.specifier(), ctx);
+            Type t = this.popType(father.specifier());
+        }
+    }
+
+    @Override
+    public void exitCompSt(CmmParser.CompStContext ctx) {
+        // compSt: LC defList stmtList RC
+        CmmParser.ExtDefContext father = (CmmParser.ExtDefContext) ctx.getParent();
+        Type t = this.popType(father.specifier());
+    }
+
+    @Override
+    public void enterStmtList(CmmParser.StmtListContext ctx) {
+        // 传递 return type
+        this.passFatherInhType(ctx);
+    }
+
+    @Override
+    public void exitStmtList(CmmParser.StmtListContext ctx) {
+
+    }
+
+    @Override
+    public void enterStmt(CmmParser.StmtContext ctx) {
+        // 传递 return type
+        // 父节点是 stmtList 和 stmt 都需要传
+        this.passFatherInhType(ctx);
+    }
+
+    @Override
+    public void exitStmt(CmmParser.StmtContext ctx) {
+        Type returnType = this.popType(ctx);
+        // stmt: RETURN? exp SEMI
+        // exp 需要返回自己的 type
+        if (ctx.RETURN() != null) {
+            Type extType = this.popType(ctx.exp());
+            // 底层错直接忽略
+            if (extType.isError()) return;
+            if (!returnType.isEquivalentType(extType)) {
+                this.notifyError(ErrorType.TypeMismatchReturn, ctx.getStart().getLine());
+            }
+            return;
+        }
+        // stmt: IF LP exp RP stmt (ELSE stmt)?
+        // stmt: WHILE LP exp RP stmt
+        // exp 必须是 int 类型
+        if (ctx.exp() != null) {
+            Type type = this.popType(ctx.exp());
+            // 底层错直接忽略
+            if (type.isError()) return;
+            if (!IntT.isInt(type)) {
+                this.notifyError(ErrorType.TypeMismatchOperand, ctx.exp().getStart().getLine());
+            }
+        }
+    }
+
+    @Override
+    public void enterDefList(CmmParser.DefListContext ctx) {
+    }
+
+    @Override
+    public void exitDefList(CmmParser.DefListContext ctx) {
+        // 同样是按顺序组装 Fields
+        FieldList res = this.concatChildFields(ctx.def());
+        this.pushField(ctx, res);
+    }
+
+    @Override
+    public void enterDef(CmmParser.DefContext ctx) {
+    }
+
+    @Override
+    public void exitDef(CmmParser.DefContext ctx) {
+        this.passChildSynField(ctx.decList(), ctx);
+    }
+
+    @Override
+    public void enterDecList(CmmParser.DecListContext ctx) {
+        // ctx.getParent().getRuleIndex() == CmmParser.RULE_def 恒成立
+        CmmParser.DefContext c = (CmmParser.DefContext) ctx.getParent();
+        this.passBrotherInhType(c.specifier(), ctx);
+    }
+
+    @Override
+    public void exitDecList(CmmParser.DecListContext ctx) {
+        // 按顺序组装 fields
+        FieldList res = this.concatChildFields(ctx.dec());
+        this.pushField(ctx, res);
+    }
+
+    @Override
+    public void enterDec(CmmParser.DecContext ctx) {
+        this.passFatherInhType(ctx);
+    }
+
+    @Override
+    public void exitDec(CmmParser.DecContext ctx) {
+        this.passChildSynField(ctx.varDec(), ctx);
+        // 检查赋值语句
+        // 虽然有 (ASSIGNOP exp)*, 但是最多只会扩展出一次
+        if (ctx.ASSIGNOP().equals(Collections.emptyList())) return;
+        CmmParser.ExpContext exp = ctx.exp(0);
+        Type expType = this.popType(exp);
+        // 底层错则直接忽略
+        if (expType.isError()) return;
+        Type varType = this.popType(ctx.varDec());
+        // 赋值两边类型必须相等
+        if (!expType.isEquivalentType(varType)) {
+            this.notifyError(ErrorType.TypeMismatchAssign, ctx.ASSIGNOP(0).getSymbol().getLine());
+        }
+    }
+
+    // 以下是 exp 备选分支
+    // 在一些终结节点查询符号表作为综合属性返回 type
+    @Override
+    public void enterExpAssign(CmmParser.ExpAssignContext ctx) {
+    }
+
+    @Override
+    public void exitExpAssign(CmmParser.ExpAssignContext ctx) {
+        // exp: exp ASSIGNOP exp
+        CmmParser.ExpContext left = ctx.exp(0);
+        CmmParser.ExpContext right = ctx.exp(1);
+        Type leftT = this.popType(left);
+        Type rightT = this.popType(right);
+        // 底层错直接忽略
+        if (leftT.isError() || rightT.isError()) {
+            leftT.setError(true);
+            this.pushType(ctx, leftT);
+            return;
+        }
+        // 会检查是否是左值 **成功后** 才检查赋值的类型是否匹配
+        // 右值检测
+        if (leftT.isRightVal()) {
+            this.notifyError(ErrorType.RValAssign, left.getStart().getLine());
+            leftT.setError(true);
+        } else {
+            // 类型检测
+            // rightT.setRightVal(true); 可写可不写
+            if (!leftT.isEquivalentType(rightT)) {
+                this.notifyError(ErrorType.TypeMismatchAssign, ctx.ASSIGNOP().getSymbol().getLine());
+                leftT.setError(true);
+            }
+        }
+        // 返回类型 左边的为准
+        this.pushType(ctx, leftT);
+    }
+
+    @Override
+    public void enterExpOr(CmmParser.ExpOrContext ctx) {
+    }
+
+    @Override
+    public void exitExpOr(CmmParser.ExpOrContext ctx) {
+        // 仅有 int 型和 float 型变量才能参与算术运算
+        // 且相互运算的类型必须相同
+        // exp: exp OR exp
+        CmmParser.ExpContext left = ctx.exp(0);
+        CmmParser.ExpContext right = ctx.exp(1);
+        Type leftT = this.popType(left);
+        Type rightT = this.popType(right);
+        // 底层错直接忽略
+        if (leftT.isError() || rightT.isError()) {
+            leftT.setError(true);
+            this.pushType(ctx, leftT);
+            return;
+        }
+        // 同层级, 全输出?
+        // 我暂时以, 首先判断能不能进行运算, 如果可以再判断类型是否匹配
+        boolean callable = true;
+        if (!IntT.isInt(leftT) && !FloatT.isFloat(leftT)) {
+            callable = false;
+            notifyError(ErrorType.TypeMismatchOperand, left.getStart().getLine());
+        }
+        if (!IntT.isInt(rightT) && !FloatT.isFloat(rightT)) {
+            callable = false;
+            notifyError(ErrorType.TypeMismatchOperand, right.getStart().getLine());
+        }
+        if (callable) {
+            if (!leftT.isEquivalentType(rightT)) {
+                leftT.setError(true);
+                this.notifyError(ErrorType.TypeMismatchOperand, ctx.OR().getSymbol().getLine());
+            }
+        } else leftT.setError(true);
+        this.pushType(ctx, leftT);
+    }
+
+    @Override
+    public void enterExpStructRef(CmmParser.ExpStructRefContext ctx) {
+        Type t = this.popType(ctx.exp());
+        // 底层错直接忽略
+        if (t.isError()) {
+            this.pushType(ctx, t);
+            return;
+        }
+        // exp type 必须是 struct
+        if (!StructureT.isStructure(t)) {
+            t.setError(true);
+            this.notifyError(ErrorType.IllegalStructRef, ctx.DOT().getSymbol().getLine());
+        }
+    }
+
+    @Override
+    public void exitExpStructRef(CmmParser.ExpStructRefContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpMulOrDiv(CmmParser.ExpMulOrDivContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpMulOrDiv(CmmParser.ExpMulOrDivContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpFuncCall(CmmParser.ExpFuncCallContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpFuncCall(CmmParser.ExpFuncCallContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpCompare(CmmParser.ExpCompareContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpCompare(CmmParser.ExpCompareContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpNegative(CmmParser.ExpNegativeContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpNegative(CmmParser.ExpNegativeContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpParenthesis(CmmParser.ExpParenthesisContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpParenthesis(CmmParser.ExpParenthesisContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpFloat(CmmParser.ExpFloatContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpFloat(CmmParser.ExpFloatContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpAnd(CmmParser.ExpAndContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpAnd(CmmParser.ExpAndContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpPlusOrMinus(CmmParser.ExpPlusOrMinusContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpPlusOrMinus(CmmParser.ExpPlusOrMinusContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpNot(CmmParser.ExpNotContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpNot(CmmParser.ExpNotContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpArrayRef(CmmParser.ExpArrayRefContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpArrayRef(CmmParser.ExpArrayRefContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpId(CmmParser.ExpIdContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpId(CmmParser.ExpIdContext ctx) {
+
+    }
+
+    @Override
+    public void enterExpInt(CmmParser.ExpIntContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpInt(CmmParser.ExpIntContext ctx) {
+
+    }
+
+    @Override
+    public void enterArgs(CmmParser.ArgsContext ctx) {
+
+    }
+
+    @Override
+    public void exitArgs(CmmParser.ArgsContext ctx) {
+
+    }
+
+    @Override
+    public void visitTerminal(TerminalNode terminalNode) {
+
+
+    }
+
+    @Override
+    public void visitErrorNode(ErrorNode errorNode) {
+    }
+
+    // 先于具体的 enterRule 调用
+    @Override
+    public void enterEveryRule(ParserRuleContext parserRuleContext) {
+    }
+
+    // 后于具体的 exitRule 调用
+    @Override
+    public void exitEveryRule(ParserRuleContext parserRuleContext) {
+    }
+
+}

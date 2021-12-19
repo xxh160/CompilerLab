@@ -1,6 +1,6 @@
-public class Float extends Type {
+public class FloatT extends Type {
 
-    public Float() {
+    public FloatT() {
         super(Kind.FLOAT);
     }
 
@@ -10,4 +10,10 @@ public class Float extends Type {
         if (t == null) return false;
         return this.selfKind == t.getSelfKind();
     }
+
+    public static boolean isFloat(Type t) {
+        if (t == null) return false;
+        return t.getSelfKind() == Kind.FLOAT;
+    }
+
 }
