@@ -552,6 +552,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         if (!callable) return errorInfo;
         if (!leftInfo.getT().isEquivalentType(rightInfo.getT())) {
             this.notifyError(ErrorType.TypeMismatchOperand, ctx.getStart().getLine());
+            return errorInfo;
         }
         res.setT(leftInfo.getT());
         return res;
@@ -588,6 +589,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
                 .collect(Collectors.toList());
         for (ParseInfo i : list) {
             if (i.isError()) return errorInfo;
+            i.setF(new FieldList(null, i.getT()));
         }
         return this.concatInfoFields(list);
     }
