@@ -229,6 +229,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             i.setError(true);
         } else this.st.put(s); // 放入符号表
         i.setF(f);
+        i.setT((base == null) ? type : base);
         return i;
     }
 
