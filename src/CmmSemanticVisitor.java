@@ -455,7 +455,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         // 是否有这个 function
         String name = ctx.ID().getText();
         if (!this.st.contains(name)) {
-            this.notifyError(ErrorType.RedefinedFun, ctx.ID().getSymbol().getLine());
+            this.notifyError(ErrorType.UndefinedFun, ctx.ID().getSymbol().getLine());
             return errorInfo;
         }
         Type t = this.st.get(name).getType();
