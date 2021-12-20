@@ -1,7 +1,13 @@
 public class StructureT extends Type {
 
-    private final String name;
-    private final FieldList memberList;
+    private String name;
+    private FieldList memberList;
+
+    public StructureT() {
+        super(Kind.STRUCTURE);
+        this.name = null;
+        this.memberList = null;
+    }
 
     // 匿名 struct 的 name 可能为空
     // 匿名 struct 不在符号表中
@@ -15,8 +21,16 @@ public class StructureT extends Type {
         return this.name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public FieldList getMemberList() {
         return this.memberList;
+    }
+
+    public void setMemberList(FieldList memberList) {
+        this.memberList = memberList;
     }
 
     public boolean hasMember(String name) {
@@ -28,7 +42,7 @@ public class StructureT extends Type {
         }
         return cur.getName().equals(name);
     }
-
+    
     public FieldList getMember(String name) {
         if (name == null) return null;
         FieldList cur = this.memberList;
