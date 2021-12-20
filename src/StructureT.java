@@ -3,12 +3,6 @@ public class StructureT extends Type {
     private String name;
     private FieldList memberList;
 
-    public StructureT() {
-        super(Kind.STRUCTURE);
-        this.name = null;
-        this.memberList = null;
-    }
-
     // 匿名 struct 的 name 可能为空
     // 匿名 struct 不在符号表中
     public StructureT(String name, FieldList f) {
@@ -42,7 +36,7 @@ public class StructureT extends Type {
         }
         return cur.getName().equals(name);
     }
-    
+
     public FieldList getMember(String name) {
         if (name == null) return null;
         FieldList cur = this.memberList;

@@ -418,7 +418,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         // 底层错直接忽略
         if (leftInfo.isError() || rightInfo.isError()) return errorInfo;
         // 检查左值 只有不是左值才会检测类型
-        if (leftInfo.getT().isRightVal()) {
+        if (leftInfo.isRightVal()) {
             this.notifyError(ErrorType.RValAssign, ctx.exp(0).getStart().getLine());
             return errorInfo;
         }
@@ -427,6 +427,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             return errorInfo;
         }
         res.setT(leftInfo.getT());
+        res.setRightVal(true);
         return res;
     }
 
@@ -480,6 +481,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         }
         ParseInfo res = new ParseInfo();
         res.setT(ft.getReturnType());
+        res.setRightVal(true);
         return res;
     }
 
@@ -492,7 +494,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
     public ParseInfo visitExpFloat(CmmParser.ExpFloatContext ctx) {
         ParseInfo i = new ParseInfo();
         FloatT t = new FloatT();
-        t.setRightVal(true);
+        i.setRightVal(true);
         i.setT(t);
         return i;
     }
@@ -530,6 +532,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         Symbol s = this.st.get(name);
         ParseInfo res = new ParseInfo();
         res.setT(s.getType());
+        if (FunctionT.isFunction(s.getType())) res.setRightVal(true);
         return res;
     }
 
@@ -556,6 +559,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             return errorInfo;
         }
         res.setT(leftInfo.getT());
+        res.setRightVal(true);
         return res;
     }
 
@@ -568,14 +572,17 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             notifyError(ErrorType.TypeMismatchOperand, ctx.exp().getStart().getLine());
             return errorInfo;
         }
-        return i;
+        ParseInfo res = new ParseInfo();
+        res.setT(i.getT());
+        res.setRightVal(true);
+        return res;
     }
 
     @Override
     public ParseInfo visitExpInt(CmmParser.ExpIntContext ctx) {
         ParseInfo i = new ParseInfo();
         IntT t = new IntT();
-        t.setRightVal(true);
+        i.setRightVal(true);
         i.setT(t);
         return i;
     }

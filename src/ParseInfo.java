@@ -26,6 +26,8 @@ public class ParseInfo {
     private boolean error;
     // is in structScope
     private boolean structScope;
+    // right val
+    private boolean isRightVal;
 
     public ParseInfo() {
         this.f = null;
@@ -81,4 +83,13 @@ public class ParseInfo {
     public void setStructScope(boolean structScope) {
         this.structScope = structScope;
     }
+
+    public boolean isRightVal() {
+        return isRightVal;
+    }
+
+    public void setRightVal(boolean rightVal) {
+        isRightVal = rightVal;
+    }
+    
 }

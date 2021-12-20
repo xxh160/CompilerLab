@@ -3,23 +3,14 @@ public class FunctionT extends Type {
     private final Type returnType;
     private FieldList paramList;
 
-    public FunctionT() {
-        super(Kind.FUNCTION);
-        this.isRightVal = true;
-        this.returnType = null;
-        this.paramList = null;
-    }
-
     public FunctionT(Type t) {
         super(Kind.FUNCTION);
-        this.isRightVal = true;
         this.returnType = t;
         this.paramList = null;
     }
 
     public FunctionT(Type t, FieldList f) {
         super(Kind.FUNCTION);
-        this.isRightVal = true;
         this.returnType = t;
         this.paramList = f;
     }
