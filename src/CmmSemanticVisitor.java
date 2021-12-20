@@ -599,6 +599,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
                 .map(this::visit)
                 .collect(Collectors.toList());
         for (ParseInfo i : list) {
+            if (i.isError()) return errorInfo;
             i.setF(new FieldList(null, i.getT()));
         }
         return this.concatInfoFields(list);
