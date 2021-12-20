@@ -2,8 +2,8 @@
 // 这里却是代替了链表自己的功能了
 public class FieldList {
 
-    private String name;
-    private Type type;
+    private final String name;
+    private final Type type;
     private FieldList next;
 
     public FieldList(String name, Type type) {
@@ -48,12 +48,6 @@ public class FieldList {
         FieldList curF = f.getNext();
         if (curS == null) return curF == null;
         return curS.equals(curF);
-    }
-
-    public void setError() {
-        this.name = null;
-        this.type = null;
-        this.next = null;
     }
 
 }

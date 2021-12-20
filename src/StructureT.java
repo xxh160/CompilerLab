@@ -41,6 +41,7 @@ public class StructureT extends Type {
     public FieldList getMember(String name) {
         if (name == null) return null;
         FieldList cur = this.memberList;
+        if (cur == null) return null;
         while (cur.hasNext()) {
             if (cur.getName().equals(name)) return cur;
             cur = cur.getNext();

@@ -1,6 +1,6 @@
-int f(int x, int y, int x) {}
+int f(int x) {}
 
 int main() {
-    int a[1];
-    a[1.5] = 2;
+    int a = 1.0, c = 1 = a;
+    a = (1+5)*3;
 }

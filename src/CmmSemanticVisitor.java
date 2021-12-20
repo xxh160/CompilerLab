@@ -221,9 +221,11 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             ErrorType et = ((fi.isStructScope()) ? ErrorType.IllegalStruct : ErrorType.RedefinedVar);
             this.notifyError(et, ctx.ID(0).getSymbol().getLine());
             // 出错返回空 info
-            // 但是即使出错也得返回 type 所以不能直接返回
-            f.setError();
-            i.setError(true);
+            // 但是即使出错也得返回 type 所以不能直接返回 ?
+            // 是这样 ? 我直接返回 error 试试
+            // f.setError();
+            return errorInfo;
+            // i.setError(true);
         } else this.st.put(s); // 放入符号表
         i.setF(f);
         i.setT((base == null) ? type : base);
@@ -488,8 +490,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
     @Override
     public ParseInfo visitExpParenthesis(CmmParser.ExpParenthesisContext ctx) {
         ParseInfo i = this.visit(ctx.exp());
-        // ???
-        i.setRightVal(false);
+        // i.setRightVal(false);
         return i;
     }
 
