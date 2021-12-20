@@ -1,5 +1,6 @@
 int f(int x, int y, int x) {}
 
 int main() {
-   f(1,2,f(1));
+    int a[1];
+    a[1.5] = 2;
 }

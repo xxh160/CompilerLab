@@ -2,7 +2,6 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 
 public class Main {
 
@@ -16,7 +15,7 @@ public class Main {
 
             CmmSemanticVisitor visitor = new CmmSemanticVisitor();
             visitor.visit(programContext);
-        } catch (IOException e) {
+        } catch (Exception e) {
         }
     }
 

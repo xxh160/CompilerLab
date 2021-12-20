@@ -221,6 +221,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             ErrorType et = ((fi.isStructScope()) ? ErrorType.IllegalStruct : ErrorType.RedefinedVar);
             this.notifyError(et, ctx.ID(0).getSymbol().getLine());
             // 出错返回空 info
+            // 但是即使出错也得返回 type 所以不能直接返回
             f.setError();
             i.setError(true);
         } else this.st.put(s); // 放入符号表
