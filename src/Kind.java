@@ -4,4 +4,5 @@ public enum Kind {
     ARRAY,
     STRUCTURE,
     FUNCTION,
+    ERROR
 }
