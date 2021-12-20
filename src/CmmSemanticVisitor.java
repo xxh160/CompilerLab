@@ -427,7 +427,6 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             return errorInfo;
         }
         res.setT(leftInfo.getT());
-        res.setRightVal(true);
         return res;
     }
 

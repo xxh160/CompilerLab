@@ -1,11 +1,13 @@
 struct A {
  int i = 1;
  int j;
- struct {} e;
-} s;
+ struct {float j;int n;} e;
+} s[0];
 
 int main()
 {
   int i;
-  i + 3 = 1;
+  struct {int g;} m;
+  s[0].e = m;
+  (i = 3) = 1;
 }
