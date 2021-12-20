@@ -480,7 +480,6 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         }
         ParseInfo res = new ParseInfo();
         res.setT(ft.getReturnType());
-        res.getT().setRightVal(true);
         return res;
     }
 
@@ -557,7 +556,6 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             return errorInfo;
         }
         res.setT(leftInfo.getT());
-        res.getT().setRightVal(true);
         return res;
     }
 
@@ -570,7 +568,6 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             notifyError(ErrorType.TypeMismatchOperand, ctx.exp().getStart().getLine());
             return errorInfo;
         }
-        i.getT().setRightVal(true);
         return i;
     }
 
