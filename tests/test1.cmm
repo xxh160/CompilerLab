@@ -1,8 +1,5 @@
+int f(int x, int y) {}
+
 int main() {
-    if (main) {
-        while (main) {
-            return main;
-        }
-        return 1.0;
-    }
+   f(1,2,f(1));
 }

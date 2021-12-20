@@ -70,6 +70,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             }
             f.add(curF);
         }
+        res.setF(f);
         return res;
     }
 
