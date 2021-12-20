@@ -3,5 +3,7 @@ struct B a[10];
 int foo(int k) {}
 
 int main() {
+    int a, b, c, d, e;
+    float l;
    foo(a[0], 1);
 }
