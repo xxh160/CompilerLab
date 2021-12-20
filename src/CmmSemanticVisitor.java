@@ -59,14 +59,16 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
 
     private ParseInfo concatInfoFields(List<ParseInfo> children) {
         ParseInfo res = new ParseInfo();
+        FieldList f = null;
         for (ParseInfo cur : children) {
             // error: 加入一个空 Error field, 传入时已经设置好了
+            FieldList curF = cur.getF();
             if (cur.getF() == null) continue;
-            if (res.getF() == null) {
-                res.setF(cur.getF());
+            if (f == null) {
+                f = curF;
                 continue;
             }
-            res.getF().add(cur.getF());
+            f.add(curF);
         }
         return res;
     }

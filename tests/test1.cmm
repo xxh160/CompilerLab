@@ -1,9 +1,9 @@
-struct B a[10];
+struct a {
+    struct b x;
+    int b;
+};
 
-int foo(int k) {}
-
-int main() {
-    int a, b, c, d, e;
-    float l;
-   foo(a[0], 1);
+int f() {
+    struct a x;
+    x.x;
 }
