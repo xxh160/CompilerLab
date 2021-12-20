@@ -3,6 +3,6 @@ public enum Kind {
     FLOAT,
     ARRAY,
     STRUCTURE,
-    FUNCTION;
-
+    FUNCTION,
+    ERROR
 }

@@ -12,6 +12,8 @@ public class ParseInfo {
         if (errorInfo == null) {
             errorInfo = new ParseInfo();
             errorInfo.setError(true);
+            errorInfo.setT(new ErrorT());
+            errorInfo.setF(new FieldList("", new ErrorT()));
         }
         return errorInfo;
     }
@@ -91,5 +93,5 @@ public class ParseInfo {
     public void setRightVal(boolean rightVal) {
         isRightVal = rightVal;
     }
-    
+
 }

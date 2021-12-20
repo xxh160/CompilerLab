@@ -1,13 +1,7 @@
-struct A {
- int i = 1;
- int j;
- struct {float j;int n;} e;
-} s[0];
+struct B a[10];
 
-int main()
-{
-  int i;
-  struct {int g;} m;
-  s[0].e = m;
-  (i = 3) = 1;
+int foo(int k) {}
+
+int main() {
+   foo(a[0], 1);
 }

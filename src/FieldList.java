@@ -50,9 +50,9 @@ public class FieldList {
         return curS.equals(curF);
     }
 
-    public void setNull() {
-        this.name = null;
-        this.type = null;
+    public void setError() {
+        this.name = "";
+        this.type = new ErrorT();
         this.next = null;
     }
 
