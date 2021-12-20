@@ -490,6 +490,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
     @Override
     public ParseInfo visitExpParenthesis(CmmParser.ExpParenthesisContext ctx) {
         ParseInfo i = this.visit(ctx.exp());
+        if (i.isError()) return errorInfo;
         i.setRightVal(false);
         return i;
     }
