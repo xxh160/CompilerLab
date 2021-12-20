@@ -1,9 +1,8 @@
-struct a {
-    struct b x;
-    int b;
-};
-
-int f() {
-    struct a x;
-    x.x;
+int main() {
+    if (main) {
+        while (main) {
+            return main;
+        }
+        return 1.0;
+    }
 }

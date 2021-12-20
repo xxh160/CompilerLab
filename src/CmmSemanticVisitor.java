@@ -320,7 +320,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         if (!i.isError()) {
             Type extType = i.getT();
             if (!returnType.isEquivalentType(extType)) {
-                this.notifyError(ErrorType.TypeMismatchReturn, ctx.exp().getStart().getLine());
+                this.notifyError(ErrorType.TypeMismatchOperand, ctx.exp().getStart().getLine());
             }
         }
         this.putInfo(ctx, fi);
@@ -336,7 +336,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         if (!i.isError()) {
             Type extType = i.getT();
             if (!returnType.isEquivalentType(extType)) {
-                this.notifyError(ErrorType.TypeMismatchReturn, ctx.exp().getStart().getLine());
+                this.notifyError(ErrorType.TypeMismatchOperand, ctx.exp().getStart().getLine());
             }
         }
         this.putInfo(ctx, fi);
