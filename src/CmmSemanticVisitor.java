@@ -392,6 +392,8 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         // structure 内不允许赋值 error type 15
         if (fi.isStructScope()) {
             this.notifyError(ErrorType.IllegalStruct, ctx.getStart().getLine());
+            // 将加入符号表中的符号删除
+            this.st.remove(ctx.varDec().ID(0).getText());
             return errorInfo;
         }
         ParseInfo ei = this.visit(ctx.exp(0));

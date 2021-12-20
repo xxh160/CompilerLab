@@ -61,4 +61,25 @@ public class SymbolTable {
         return cur.getName().equals(name);
     }
 
+    public void remove(String name) {
+        if (name == null) return;
+        int index = this.getIndex(name);
+        if (this.table[index] == null) return;
+        Symbol cur = this.table[index];
+        if (cur.getName().equals(name)) {
+            Symbol tmp = cur.getNext();
+            cur.setNext(null);
+            this.table[index] = tmp;
+            return;
+        }
+        while (cur.hasNext()) {
+            Symbol next = cur.getNext();
+            if (next.getName().equals(name)) {
+                cur.setNext(null);
+                return;
+            }
+            cur = cur.getNext();
+        }
+    }
+
 }

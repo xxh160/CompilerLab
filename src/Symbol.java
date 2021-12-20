@@ -27,6 +27,10 @@ public class Symbol {
         return this.next;
     }
 
+    public void setNext(Symbol next) {
+        this.next = next;
+    }
+
     public void add(Symbol next) {
         Symbol cur = this.next;
         if (cur == null) {
