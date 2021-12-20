@@ -51,8 +51,8 @@ public class FieldList {
     }
 
     public void setError() {
-        this.name = "";
-        this.type = new ErrorT();
+        this.name = null;
+        this.type = null;
         this.next = null;
     }
 

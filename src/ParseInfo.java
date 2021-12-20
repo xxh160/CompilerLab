@@ -12,8 +12,8 @@ public class ParseInfo {
         if (errorInfo == null) {
             errorInfo = new ParseInfo();
             errorInfo.setError(true);
-            errorInfo.setT(new ErrorT());
-            errorInfo.setF(new FieldList("", new ErrorT()));
+            errorInfo.setT(null);
+            errorInfo.setF(null);
         }
         return errorInfo;
     }
