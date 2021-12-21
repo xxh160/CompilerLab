@@ -194,7 +194,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         // paramDec: specifier varDec
         // 需要注意当前 scope 和 type
         ParseInfo fi = this.getCallParam(ctx);
-        String name = ctx.ID(0).getText();
+        String name = ctx.ID().getText();
         Type type = fi.getT();
         ArrayT base = null;
         // ArrayT 类型
@@ -217,13 +217,8 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         f = new FieldList(name, ((base == null) ? type : base));
         if (this.st.contains(name)) {
             ErrorType et = ((fi.isStructScope()) ? ErrorType.IllegalStruct : ErrorType.RedefinedVar);
-            this.notifyError(et, ctx.ID(0).getSymbol().getLine());
-            // 出错返回空 info
-            // 但是即使出错也得返回 type 所以不能直接返回 ?
-            // 是这样 ? 我直接返回 error 试试
-            // f.setError();
+            this.notifyError(et, ctx.ID().getSymbol().getLine());
             return ParseInfo.errorInfo();
-            // i.setError(true);
         } else this.st.put(s); // 放入符号表
         i.setF(f);
         i.setT((base == null) ? type : base);
@@ -397,7 +392,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         if (fi.isStructScope()) {
             this.notifyError(ErrorType.IllegalStruct, ctx.getStart().getLine());
             // 将加入符号表中的符号删除
-            this.st.remove(ctx.varDec().ID(0).getText());
+            this.st.remove(ctx.varDec().ID().getText());
             return ParseInfo.errorInfo();
         }
         ParseInfo ei = this.visit(ctx.exp(0));
