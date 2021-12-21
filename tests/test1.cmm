@@ -1,7 +1,16 @@
-int f( ) {}
+int f( ) {
+    f();
+    f();
+}
+
+struct A {
+float i;
+int j;
+}a ;
 
 int main() {
     int b[1];
-    a.c;
+    struct {float k=1; int m;} n = a;
+    while (n.m) {}
     f(b[1][2], b[1][2], b[1][2]);
 }

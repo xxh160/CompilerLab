@@ -145,6 +145,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         // defList 错了也无妨
         i.setStructScope(false);
         s = new StructureT(name, di.getF());
+        // 看完定义后才加入符号表
         if (name != null) {
             Symbol symbol = new Symbol(name, s);
             this.st.put(symbol);
@@ -407,7 +408,8 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         if (fi.isStructScope()) {
             this.notifyError(ErrorType.IllegalStruct, ctx.getStart().getLine());
             // 将加入符号表中的符号删除
-            this.st.remove(ctx.varDec().ID().getText());
+            // 要删吗 ?
+            // this.st.remove(ctx.varDec().ID().getText());
             return ParseInfo.errorInfo();
         }
         ParseInfo ei = this.visit(ctx.exp());
