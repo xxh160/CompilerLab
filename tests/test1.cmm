@@ -3,5 +3,6 @@ int f(int x) {}
 int main() {
     int a;
     f(a[0]);
+    f();
     if (a) {}
 }

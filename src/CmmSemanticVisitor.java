@@ -244,7 +244,12 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         ParseInfo fi = this.getCallParam(ctx);
         Type returnType = fi.getT();
         FieldList params = null;
-        if (ctx.varList() != null) params = this.visit(ctx.varList()).getF();
+        if (ctx.varList() != null) {
+            ParseInfo vi = this.visit(ctx.varList());
+            // 这个应该不会有 error
+            if (vi.isError()) return errorInfo;
+            params = vi.getF();
+        }
         FunctionT f = new FunctionT(returnType, params);
         Symbol s = new Symbol(name, f);
         this.st.put(s);
