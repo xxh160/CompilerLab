@@ -385,6 +385,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         ParseInfo fi = this.getCallParam(ctx);
         this.passCallParam(ctx);
         ParseInfo vi = this.visit(ctx.varDec());
+        if (vi.isError()) return ParseInfo.errorInfo();
         // 检查赋值语句
         // 虽然有 (ASSIGNOP exp)*, 但是最多只会扩展出一次
         if (ctx.ASSIGNOP().equals(Collections.emptyList())) return vi;
