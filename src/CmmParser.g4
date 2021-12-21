@@ -27,7 +27,7 @@ optTag: ID?;
 tag: ID;
 
 // declarators
-varDec: ID (LB (INT|FLOAT|ID) RB)*
+varDec: ID (LB INT RB)*
       // | ID (LB INT RB)* (LB (FLOAT|ID) RB) (LB (INT|FLOAT|ID) RB)* // { notifyErrorListeners ("Index must be an integer"); }
       ;
 

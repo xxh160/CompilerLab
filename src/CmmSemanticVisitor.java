@@ -203,6 +203,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             int size = 0;
             int t = cur.getSymbol().getType();
             if (t == CmmParser.LB || t == CmmParser.RB) continue;
+            // 语法错误
             if (t == CmmParser.FLOAT || t == CmmParser.ID) {
                 this.notifyError(ErrorType.IllegalArrayIndex, cur.getSymbol().getLine());
             } else size = (int) this.parseInteger(cur.getText()); // CmmParser.INT
