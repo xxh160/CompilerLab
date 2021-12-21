@@ -1,4 +1,4 @@
 int main() {
-    int b = 1-(2.1<2.0);
-    int a[b];
+    int a;
+    (a = a) = 2;
 }
