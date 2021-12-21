@@ -569,7 +569,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             this.notifyError(ErrorType.TypeMismatchOperand, t.getSymbol().getLine());
             return errorInfo;
         }
-        res.setT(leftInfo.getT());
+        res.setT(new IntT());
         res.setRightVal(true);
         return res;
     }
