@@ -13,7 +13,6 @@ public class ParseInfo {
             errorInfo = new ParseInfo();
             errorInfo.setError(true);
             errorInfo.setT(new ErrorT());
-            errorInfo.setF(null);
         }
         return errorInfo;
     }
