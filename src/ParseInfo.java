@@ -11,7 +11,6 @@ public class ParseInfo {
     public static ParseInfo getErrorInfo() {
         if (errorInfo == null) {
             errorInfo = new ParseInfo();
-            errorInfo.setError(true);
             errorInfo.setT(new ErrorT());
         }
         return errorInfo;
@@ -23,8 +22,6 @@ public class ParseInfo {
     private Type t;
     // var name
     private String s;
-    // error
-    private boolean error;
     // is in structScope
     private boolean structScope;
     // right val
@@ -34,7 +31,6 @@ public class ParseInfo {
         this.f = null;
         this.t = null;
         this.s = null;
-        this.error = false;
         this.structScope = false;
     }
 
@@ -42,7 +38,6 @@ public class ParseInfo {
         this.f = f;
         this.t = t;
         this.s = null;
-        this.error = false;
     }
 
     public FieldList getF() {
@@ -70,11 +65,7 @@ public class ParseInfo {
     }
 
     public boolean isError() {
-        return error;
-    }
-
-    public void setError(boolean error) {
-        this.error = error;
+        return ErrorT.isError(this.t);
     }
 
     public boolean isStructScope() {

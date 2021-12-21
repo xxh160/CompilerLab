@@ -10,4 +10,9 @@ public class ErrorT extends Type {
         return t.getSelfKind() == Kind.ERROR;
     }
 
+    public static boolean isError(Type t) {
+        if (t == null) return false;
+        return t.getSelfKind() == Kind.ERROR;
+    }
+
 }

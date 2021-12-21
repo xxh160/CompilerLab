@@ -555,16 +555,16 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         // 底层错直接忽略
         if (leftInfo.isError() || rightInfo.isError()) return errorInfo;
         ParseInfo res = new ParseInfo();
-        boolean callable = true;
+        // 左操作数不是可运算类型
         if (!IntT.isInt(leftInfo.getT()) && !FloatT.isFloat(leftInfo.getT())) {
-            callable = false;
             notifyError(ErrorType.TypeMismatchOperand, ctx.exp(0).getStart().getLine());
+            return errorInfo;
         }
+        // 右操作数不是可运算类型
         if (!IntT.isInt(rightInfo.getT()) && !FloatT.isFloat(rightInfo.getT())) {
-            callable = false;
             notifyError(ErrorType.TypeMismatchOperand, ctx.exp(1).getStart().getLine());
+            return errorInfo;
         }
-        if (!callable) return errorInfo;
         if (!leftInfo.getT().isEquivalentType(rightInfo.getT())) {
             TerminalNode t = (TerminalNode) ctx.getChild(1);
             this.notifyError(ErrorType.TypeMismatchOperand, t.getSymbol().getLine());
