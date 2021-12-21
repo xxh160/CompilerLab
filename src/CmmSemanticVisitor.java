@@ -483,7 +483,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         }
         // 不匹配
         if (!ft.isParamsMatched(params)) {
-            this.notifyError(ErrorType.FunArgMismatch, ctx.args().getStart().getLine());
+            this.notifyError(ErrorType.FunArgMismatch, ctx.getStart().getLine());
             return errorInfo;
         }
         ParseInfo res = new ParseInfo();
