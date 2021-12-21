@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -357,6 +358,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         // 返回字段链表 按照顺序拼接
         // 传入是否在 struct 内
         this.passCallParam(ctx);
+        // 每个 visit 是否成立和别的 visit 无关
         List<ParseInfo> list = ctx.def()
                 .stream()
                 .map(this::visit)
@@ -382,6 +384,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         // 返回字段链表 按照顺序拼接
         // 是否在 struct 和 specifier
         this.passCallParam(ctx);
+        // 每个 visit 是否成立和别的 visit 无关
         List<ParseInfo> list = ctx.dec()
                 .stream()
                 .map(this::visit)
@@ -440,8 +443,9 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             return ParseInfo.errorInfo();
         }
         res.setT(leftInfo.getT());
-        // 返回右值
-        res.setRightVal(true);
+        // 返回左值
+        // oj 上应该是判定左值 ?
+        res.setRightVal(false);
         return res;
     }
 
@@ -485,6 +489,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         FieldList params = null;
         if (ctx.args() != null) {
             ParseInfo i = this.visit(ctx.args());
+            // 如果 args 出错 那直接返回错误
             if (i.isError()) return ParseInfo.errorInfo();
             params = i.getF();
         }
@@ -518,6 +523,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
     @Override
     public ParseInfo visitExpArrayRef(CmmParser.ExpArrayRefContext ctx) {
         ParseInfo i = this.visit(ctx.exp(0));
+        // 前边出错直接返回
         if (i.isError()) return ParseInfo.errorInfo();
         Type t = i.getT();
         // 不是 array
@@ -526,6 +532,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             return ParseInfo.errorInfo();
         }
         ParseInfo ei = this.visit(ctx.exp(1));
+        // 有一个 index 错就判全部错
         if (ei.isError()) return ParseInfo.errorInfo();
         // index 不是 int
         if (!IntT.isInt(ei.getT())) {
@@ -563,12 +570,12 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         ParseInfo res = new ParseInfo();
         // 左操作数不是可运算类型
         if (!IntT.isInt(leftInfo.getT()) && !FloatT.isFloat(leftInfo.getT())) {
-            notifyError(ErrorType.TypeMismatchOperand, ctx.exp(0).getStart().getLine());
+            this.notifyError(ErrorType.TypeMismatchOperand, ctx.exp(0).getStart().getLine());
             return ParseInfo.errorInfo();
         }
         // 右操作数不是可运算类型
         if (!IntT.isInt(rightInfo.getT()) && !FloatT.isFloat(rightInfo.getT())) {
-            notifyError(ErrorType.TypeMismatchOperand, ctx.exp(1).getStart().getLine());
+            this.notifyError(ErrorType.TypeMismatchOperand, ctx.exp(1).getStart().getLine());
             return ParseInfo.errorInfo();
         }
         if (!leftInfo.getT().isEquivalentType(rightInfo.getT())) {
@@ -610,13 +617,13 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
     public ParseInfo visitArgs(CmmParser.ArgsContext ctx) {
         // exp (COMMA exp)*
         // 返回一个 fieldList 作为 params
-        List<ParseInfo> list = ctx.exp()
-                .stream()
-                .map(this::visit)
-                .collect(Collectors.toList());
-        for (ParseInfo i : list) {
-            if (i.isError()) return ParseInfo.errorInfo();
-            i.setF(new FieldList(null, i.getT()));
+        // 每个 visit 是否成立好像和别的 visit 相关
+        List<ParseInfo> list = new ArrayList<>();
+        for (CmmParser.ExpContext i : ctx.exp()) {
+            ParseInfo cur = this.visit(i);
+            if (cur.isError()) return ParseInfo.errorInfo();
+            cur.setF(new FieldList(null, cur.getT()));
+            list.add(cur);
         }
         return this.concatInfoFields(list);
     }
