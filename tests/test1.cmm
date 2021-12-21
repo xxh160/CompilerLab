@@ -10,7 +10,8 @@ int j;
 
 int main() {
     int b[1];
-    struct {float k=1; int m;} n = a;
+    struct {float k=1; int m;}
+    n = a;
     while (n.m) {}
     f(b[1][2], b[1][2], b[1][2]);
 }

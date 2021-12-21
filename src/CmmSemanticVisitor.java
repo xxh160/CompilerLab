@@ -410,7 +410,8 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             // 将加入符号表中的符号删除
             // 要删吗 ?
             // this.st.remove(ctx.varDec().ID().getText());
-            return ParseInfo.errorInfo();
+            // 好像删不删无所谓, 但不删就必须要返回 vi
+            return vi;
         }
         ParseInfo ei = this.visit(ctx.exp());
         // 底层错则直接忽略
