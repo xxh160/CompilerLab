@@ -1,18 +1,13 @@
 public class ParseInfo {
 
-    private static ParseInfo blankInfo = null;
-    private static ParseInfo errorInfo = null;
 
-    public static ParseInfo getBlankInfo() {
-        if (blankInfo == null) blankInfo = new ParseInfo();
-        return blankInfo;
+    public static ParseInfo nullInfo() {
+        return new ParseInfo();
     }
 
-    public static ParseInfo getErrorInfo() {
-        if (errorInfo == null) {
-            errorInfo = new ParseInfo();
-            errorInfo.setT(new ErrorT());
-        }
+    public static ParseInfo errorInfo() {
+        ParseInfo errorInfo = new ParseInfo();
+        errorInfo.setT(new ErrorT());
         return errorInfo;
     }
 
