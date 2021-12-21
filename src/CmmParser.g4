@@ -55,7 +55,7 @@ def: specifier decList SEMI;
 
 decList: dec (COMMA dec)*;
 
-dec: varDec (ASSIGNOP exp)*;
+dec: varDec ASSIGNOP exp;
 
 // expressions and args
 exp: ID LP args? RP #ExpFunCall

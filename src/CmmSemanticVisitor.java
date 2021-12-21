@@ -4,7 +4,6 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.math.BigInteger;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -142,6 +141,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         i.setStructScope(true);
         this.putInfo(ctx, i);
         ParseInfo di = this.visit(ctx.defList());
+        // defList 错了也无妨
         i.setStructScope(false);
         s = new StructureT(name, di.getF());
         if (name != null) {
@@ -200,13 +200,9 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         // ArrayT 类型
         for (int i = ctx.getChildCount() - 1; i > 0; --i) {
             TerminalNode cur = (TerminalNode) ctx.getChild(i);
-            int size = 0;
             int t = cur.getSymbol().getType();
             if (t == CmmParser.LB || t == CmmParser.RB) continue;
-            // 语法错误
-            if (t == CmmParser.FLOAT || t == CmmParser.ID) {
-                this.notifyError(ErrorType.IllegalArrayIndex, cur.getSymbol().getLine());
-            } else size = (int) this.parseInteger(cur.getText()); // CmmParser.INT
+            int size = (int) this.parseInteger(cur.getText()); // CmmParser.INT
             if (base == null) base = new ArrayT(type, size);
             else base = new ArrayT(base, size);
         }
@@ -240,7 +236,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         if (ctx.varList() != null) {
             ParseInfo vi = this.visit(ctx.varList());
             // 这个应该不会有 error
-            if (vi.isError()) return ParseInfo.errorInfo();
+            // 或者说 出错也无妨
             params = vi.getF();
         }
         FunctionT f = new FunctionT(returnType, params);
@@ -266,6 +262,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         // 返回值原封不动传回去就行
         ParseInfo i = this.visit(ctx.specifier());
         // 出错返回错误 info 即可
+        if (i.isError()) return ParseInfo.errorInfo();
         this.putInfo(ctx, i);
         return this.visit(ctx.varDec());
     }
@@ -275,7 +272,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         // compSt: LC defList stmtList RC
         // extDef: specifier funDec compSt
         // stmt: compSt
-        // 主要注意传入的 specifier
+        // 主要注意传入的 specifier, return type
         this.passCallParam(ctx);
         this.visit(ctx.defList());
         this.visit(ctx.stmtList());
@@ -284,15 +281,19 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
 
     @Override
     public ParseInfo visitStmtList(CmmParser.StmtListContext ctx) {
+        // return type
         this.passCallParam(ctx);
         this.visitChildren(ctx);
+        // 出错了和别的语句关系也不大
         return ParseInfo.nullInfo();
     }
 
     @Override
     public ParseInfo visitStmtChildScope(CmmParser.StmtChildScopeContext ctx) {
+        // return type
         this.passCallParam(ctx);
         this.visit(ctx.compSt());
+        // 出错了和别的语句关系也不大
         return ParseInfo.nullInfo();
     }
 
@@ -311,6 +312,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
                 return ParseInfo.errorInfo();
             }
         }
+        // 错了和别的语句关系不大
         return ParseInfo.nullInfo();
     }
 
@@ -319,6 +321,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         ParseInfo fi = this.getCallParam(ctx);
         Type returnType = fi.getT();
         ParseInfo i = this.visit(ctx.exp());
+        // 如果 exp 错那只是跳过 exp
         if (!i.isError()) {
             Type extType = i.getT();
             if (!returnType.isEquivalentType(extType)) {
@@ -326,7 +329,9 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             }
         }
         this.putInfo(ctx, fi);
+        // 包括 else 里边的 stmt
         for (ParserRuleContext cur : ctx.stmt()) this.visit(cur);
+        // 错了和别的语句关系不大
         return ParseInfo.nullInfo();
     }
 
@@ -350,6 +355,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
     public ParseInfo visitDefList(CmmParser.DefListContext ctx) {
         // defList: def*
         // 返回字段链表 按照顺序拼接
+        // 传入是否在 struct 内
         this.passCallParam(ctx);
         List<ParseInfo> list = ctx.def()
                 .stream()
@@ -360,11 +366,13 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
 
     @Override
     public ParseInfo visitDef(CmmParser.DefContext ctx) {
+        // 是否在 struct 内
         ParseInfo fi = this.getCallParam(ctx);
         ParseInfo i = this.visit(ctx.specifier());
         if (i.isError()) return ParseInfo.errorInfo();
         i.setStructScope(fi.isStructScope());
         this.putInfo(ctx, i);
+        // 一定不是错的 最多空 info
         return this.visit(ctx.decList());
     }
 
@@ -372,6 +380,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
     public ParseInfo visitDecList(CmmParser.DecListContext ctx) {
         // decList: dec (COMMA dec)*
         // 返回字段链表 按照顺序拼接
+        // 是否在 struct 和 specifier
         this.passCallParam(ctx);
         List<ParseInfo> list = ctx.dec()
                 .stream()
@@ -383,12 +392,14 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
     @Override
     public ParseInfo visitDec(CmmParser.DecContext ctx) {
         ParseInfo fi = this.getCallParam(ctx);
+        // specifier
         this.passCallParam(ctx);
+        // type 和 field
         ParseInfo vi = this.visit(ctx.varDec());
+        // 艹 找了好久
         if (vi.isError()) return ParseInfo.errorInfo();
         // 检查赋值语句
-        // 虽然有 (ASSIGNOP exp)*, 但是最多只会扩展出一次
-        if (ctx.ASSIGNOP().equals(Collections.emptyList())) return vi;
+        if (ctx.ASSIGNOP() == null) return vi;
         // structure 内不允许赋值 error type 15
         if (fi.isStructScope()) {
             this.notifyError(ErrorType.IllegalStruct, ctx.getStart().getLine());
@@ -396,17 +407,19 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             this.st.remove(ctx.varDec().ID().getText());
             return ParseInfo.errorInfo();
         }
-        ParseInfo ei = this.visit(ctx.exp(0));
+        ParseInfo ei = this.visit(ctx.exp());
         // 底层错则直接忽略
-        if (ei.isError()) return vi;
+        // 如果是 struct 到不了这里, 如果是 compSt 返回什么都无所谓 -> 反正已经在符号表里了
+        if (ei.isError()) return ParseInfo.errorInfo();
         Type expType = ei.getT();
         Type varType = vi.getT();
         // 赋值两边类型必须相等
         if (!expType.isEquivalentType(varType)) {
-            this.notifyError(ErrorType.TypeMismatchAssign, ctx.ASSIGNOP(0).getSymbol().getLine());
+            this.notifyError(ErrorType.TypeMismatchAssign, ctx.ASSIGNOP().getSymbol().getLine());
             return ParseInfo.errorInfo();
         }
-        return vi;
+        // 返回 null 原因同上
+        return ParseInfo.nullInfo();
     }
 
     @Override
@@ -427,8 +440,8 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             return ParseInfo.errorInfo();
         }
         res.setT(leftInfo.getT());
-        // 返回左值
-        res.setRightVal(false);
+        // 返回右值
+        res.setRightVal(true);
         return res;
     }
 
