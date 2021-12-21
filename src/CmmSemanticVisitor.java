@@ -559,7 +559,8 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         if (!IntT.isInt(leftInfo.getT()) && !FloatT.isFloat(leftInfo.getT())) {
             callable = false;
             notifyError(ErrorType.TypeMismatchOperand, ctx.exp(0).getStart().getLine());
-        } else if (!IntT.isInt(rightInfo.getT()) && !FloatT.isFloat(rightInfo.getT())) {
+        }
+        if (!IntT.isInt(rightInfo.getT()) && !FloatT.isFloat(rightInfo.getT())) {
             callable = false;
             notifyError(ErrorType.TypeMismatchOperand, ctx.exp(1).getStart().getLine());
         }
