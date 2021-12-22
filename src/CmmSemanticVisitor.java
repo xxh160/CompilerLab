@@ -321,12 +321,13 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
     @Override
     public ParseInfo visitStmtIf(CmmParser.StmtIfContext ctx) {
         ParseInfo fi = this.getCallParam(ctx);
-        Type returnType = fi.getT();
         ParseInfo i = this.visit(ctx.exp());
         // 如果 exp 错那只是跳过 exp
         if (!i.isError()) {
+            // ???????
+            // 检测是不是 int
             Type extType = i.getT();
-            if (!returnType.isEquivalentType(extType)) {
+            if (!IntT.isInt(extType)) {
                 this.notifyError(ErrorType.TypeMismatchOperand, ctx.exp().getStart().getLine());
             }
         }
@@ -340,11 +341,10 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
     @Override
     public ParseInfo visitStmtWhile(CmmParser.StmtWhileContext ctx) {
         ParseInfo fi = this.getCallParam(ctx);
-        Type returnType = fi.getT();
         ParseInfo i = this.visit(ctx.exp());
         if (!i.isError()) {
             Type extType = i.getT();
-            if (!returnType.isEquivalentType(extType)) {
+            if (!IntT.isInt(extType)) {
                 this.notifyError(ErrorType.TypeMismatchOperand, ctx.exp().getStart().getLine());
             }
         }

@@ -1,17 +1,13 @@
-int f( ) {
-    f();
-    f();
-}
-
 struct A {
-float i;
-int j;
-}a ;
+int b,c,b,a,x;
+int y,c,a,n;
+float l,c,k[0],ll[0];
+} m ;
 
 int main() {
-    int b[1];
-    struct {float k=1; int m;}
-    n = a;
-    while (n.m) {}
-    f(b[1][2], b[1][2], b[1][2]);
+    struct {
+        int q,w,e,r,u,i;
+        float f,g[10],lk[1];
+    } o;
+    while(m==o) {}
 }
