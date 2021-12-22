@@ -170,10 +170,10 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             this.notifyError(ErrorType.UndefinedStruct, ctx.tag().getStart().getLine());
             return ParseInfo.errorInfo();
         }
-        // 还有可能是 struct {} x
+        // 还有可能是 struct {} x struct X {} x
         // struct x y;
         StructureT st = (StructureT) t;
-        if (st.getName() == null) {
+        if (st.getName() == null || !st.getName().equals(name)) {
             this.notifyError(ErrorType.UndefinedStruct, ctx.tag().getStart().getLine());
             return ParseInfo.errorInfo();
         }
