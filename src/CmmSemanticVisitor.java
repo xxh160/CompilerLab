@@ -144,6 +144,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         ParseInfo di = this.visit(ctx.defList());
         // defList 错了也无妨
         i.setStructScope(false);
+        // 如果是 struct {...} 那 name 是 null
         s = new StructureT(name, di.getF());
         // 看完定义后才加入符号表
         if (name != null) {
@@ -166,6 +167,13 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         }
         Type t = this.st.get(name).getType();
         if (!StructureT.isStructure(t)) {
+            this.notifyError(ErrorType.UndefinedStruct, ctx.tag().getStart().getLine());
+            return ParseInfo.errorInfo();
+        }
+        // 还有可能是 struct {} x
+        // struct x y;
+        StructureT st = (StructureT) t;
+        if (st.getName() == null) {
             this.notifyError(ErrorType.UndefinedStruct, ctx.tag().getStart().getLine());
             return ParseInfo.errorInfo();
         }
@@ -324,7 +332,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         ParseInfo i = this.visit(ctx.exp());
         // 如果 exp 错那只是跳过 exp
         if (!i.isError()) {
-            // ???????
+            // ??????? 为什么我在这里一直判断的是 return type
             // 检测是不是 int
             Type extType = i.getT();
             if (!IntT.isInt(extType)) {

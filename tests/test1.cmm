@@ -1,13 +1,4 @@
-struct A {
-int b,c,b,a,x;
-int y,c,a,n;
-float l,c,k[0],ll[0];
-} m ;
-
 int main() {
-    struct {
-        int q,w,e,r,u,i;
-        float f,g[10],lk[1];
-    } o;
-    while(m==o) {}
+    struct {} x;
+    struct x y;
 }
