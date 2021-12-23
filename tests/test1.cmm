@@ -1,7 +1,9 @@
 struct S {
 struct Y {} y;
+struct {} x;
 };
 
 int main() {
     struct y z;
+    struct x m;
 }
