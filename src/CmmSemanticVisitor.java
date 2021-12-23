@@ -601,6 +601,29 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
     }
 
     @Override
+    public ParseInfo visitExpBinaryLogic(CmmParser.ExpBinaryLogicContext ctx) {
+        // 仅有 int 型变量才能参与逻辑运算 且相互运算的类型必须相同
+        ParseInfo leftInfo = this.visit(ctx.exp(0));
+        ParseInfo rightInfo = this.visit(ctx.exp(1));
+        // 底层错直接忽略
+        if (leftInfo.isError() || rightInfo.isError()) return ParseInfo.errorInfo();
+        ParseInfo res = new ParseInfo();
+        // 左操作数不是 Int 类型
+        if (!IntT.isInt(leftInfo.getT())) {
+            this.notifyError(ErrorType.TypeMismatchOperand, ctx.exp(0).getStart().getLine());
+            return ParseInfo.errorInfo();
+        }
+        // 右操作数不是 Int 类型
+        if (!IntT.isInt(rightInfo.getT())) {
+            this.notifyError(ErrorType.TypeMismatchOperand, ctx.exp(1).getStart().getLine());
+            return ParseInfo.errorInfo();
+        }
+        res.setT(new IntT());
+        res.setRightVal(true);
+        return res;
+    }
+
+    @Override
     public ParseInfo visitExpUnary(CmmParser.ExpUnaryContext ctx) {
         // 仅有 int 型和 float 型变量才能参与算术运算
         ParseInfo i = this.visit(ctx.exp());
@@ -611,6 +634,22 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         }
         ParseInfo res = new ParseInfo();
         res.setT(i.getT());
+        res.setRightVal(true);
+        return res;
+    }
+
+    @Override
+    public ParseInfo visitExpUnaryLogic(CmmParser.ExpUnaryLogicContext ctx) {
+        // 仅有 int 型变量才能参与算术逻辑运算
+        ParseInfo i = this.visit(ctx.exp());
+        if (i.isError()) return ParseInfo.errorInfo();
+        // 不是 Int 直接报错
+        if (!IntT.isInt(i.getT())) {
+            notifyError(ErrorType.TypeMismatchOperand, ctx.exp().getStart().getLine());
+            return ParseInfo.errorInfo();
+        }
+        ParseInfo res = new ParseInfo();
+        res.setT(new IntT());
         res.setRightVal(true);
         return res;
     }

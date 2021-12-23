@@ -1,9 +1,7 @@
-struct S {
-struct Y {} y;
-struct {} x;
-};
-
-int main() {
-    struct y z;
-    struct x m;
+int f() {
+    float b;
+    b&&b;
+    if (b!=1.0) {
+        return b != 0.1;
+    }
 }

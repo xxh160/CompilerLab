@@ -61,13 +61,13 @@ dec: varDec (ASSIGNOP exp)?;
 exp: ID LP args? RP #ExpFunCall
    | exp LB exp RB #ExpArrayRef
    | exp DOT ID #ExpStructRef
-   | <assoc=right> NOT exp #ExpUnary
+   | <assoc=right> NOT exp #ExpUnaryLogic
    | <assoc=right> MINUS exp #ExpUnary
    | exp (DIV|STAR) exp #ExpBinary
    | exp (MINUS|PLUS) exp #ExpBinary
    | exp RELOP exp #ExpBinary
-   | exp AND exp #ExpBinary
-   | exp OR exp #ExpBinary
+   | exp AND exp #ExpBinaryLogic
+   | exp OR exp #ExpBinaryLogic
    | <assoc=right> exp ASSIGNOP exp #ExpAssign
    | LP exp RP #ExpParenthesis
    | ID #ExpId
