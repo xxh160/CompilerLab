@@ -173,7 +173,7 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
         // 还有可能是 struct {} x struct X {} x
         // struct x y;
         StructureT st = (StructureT) t;
-        if (st.getName() == null || !st.getName().equals(name)) {
+        if (st.isStructureVar(name)) {
             this.notifyError(ErrorType.UndefinedStruct, ctx.tag().getStart().getLine());
             return ParseInfo.errorInfo();
         }
@@ -564,6 +564,18 @@ public class CmmSemanticVisitor extends AbstractParseTreeVisitor<ParseInfo> impl
             return ParseInfo.errorInfo();
         }
         Symbol s = this.st.get(name);
+        // 理论上来说, 直接取 struct 是错误的
+        // oj 没有考
+        Type t = s.getType();
+        String symbolName = s.getName();
+        if (StructureT.isStructure(t)) {
+            StructureT st = (StructureT) t;
+            // 取出的是 struct 本身
+            if (!st.isStructureVar(symbolName)) {
+                this.notifyError(ErrorType.UndefinedVar, ctx.ID().getSymbol().getLine());
+                return ParseInfo.errorInfo();
+            }
+        }
         ParseInfo res = new ParseInfo();
         res.setT(s.getType());
         if (FunctionT.isFunction(s.getType())) res.setRightVal(true);

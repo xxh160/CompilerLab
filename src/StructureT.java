@@ -68,4 +68,14 @@ public class StructureT extends Type {
         return t.getSelfKind() == Kind.STRUCTURE;
     }
 
+    // 判断是不是 struct 类型的变量
+    // 和 struct 类型本身分开来
+    public boolean isStructureVar(String s) {
+        String stName = this.name;
+        // struct 是匿名 struct, 不存在 struct 类型本身的 symbol
+        if (stName == null) return true;
+        // struct 类型名和 s 相同的话, 说明是 struct 类型本身
+        return !stName.equals(s);
+    }
+
 }

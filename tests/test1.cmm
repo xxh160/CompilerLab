@@ -1,7 +1,7 @@
-int f() {
-    float b;
-    b&&b;
-    if (b!=1.0) {
-        return b != 0.1;
-    }
+ struct S{int a;};
+int main() {
+S;
+S+1;
+S.a;
+S.b;
 }
